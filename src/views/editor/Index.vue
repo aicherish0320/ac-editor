@@ -1,6 +1,8 @@
 <template>
   <a-layout>
-    <a-layout-header class="header">作品名称</a-layout-header>
+    <a-layout-header class="header" @click="goHome">
+      <span class="title">作品名称</span>
+    </a-layout-header>
   </a-layout>
   <a-layout>
     <a-layout-sider width="300" class="sider sider-left">
@@ -12,17 +14,28 @@
         <section class="preview-list"></section>
       </a-layout-content>
     </a-layout>
-    <a-layout-sider width="300" class="sider sider-right"
-      >sider right</a-layout-sider
-    >
+    <a-layout-sider width="300" class="sider sider-right">
+      sider right
+    </a-layout-sider>
   </a-layout>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const goHome = () => {
+  router.push('/')
+}
+</script>
 
 <style scoped lang="scss">
 .header {
   color: #fff;
+  .title {
+    cursor: pointer;
+  }
 }
 .sider {
   background: #fff;

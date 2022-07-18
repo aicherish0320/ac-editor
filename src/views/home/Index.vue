@@ -1,7 +1,7 @@
 <template>
   <a-layout>
     <a-layout-header class="header">
-      <b class="logo" @click="goHome">爱鹊絮</b>
+      <b class="logo">爱鹊絮</b>
       <section class="btn">
         <a-button type="link" @click="goLogin">登陆</a-button>
       </section>
@@ -21,9 +21,6 @@ const router = useRouter()
 const goLogin = () => {
   router.push('/login')
 }
-const goHome = () => {
-  router.push('/')
-}
 </script>
 
 <style scoped lang="scss">
@@ -33,7 +30,6 @@ const goHome = () => {
   justify-content: space-between;
   .logo {
     font-size: 20px;
-    cursor: pointer;
   }
 }
 .content {
