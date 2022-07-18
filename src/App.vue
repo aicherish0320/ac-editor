@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <a-button type="primary">Primary Button</a-button>
+  <router-view></router-view>
 </template>
 
 <style scoped></style>
