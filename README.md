@@ -18,7 +18,7 @@ declare module '*.vue' {
 - 静态类型语言
   - typescript
   - flow
-- 代码风格检查 linter
+- 代码风格检查 linter··
   - 多人协作的弊端，风格各异，维护和扩展的困难
 - 包管理器
 - 转译器
