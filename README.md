@@ -39,3 +39,7 @@ declare module '*.vue' {
   - npm scripts
 - 脚手架
   - 将工具链聚合在一个工具内 **简单、快速、零配置**
+
+## ESLint
+
+是一个开源的 JavaScript 的 linting 工具，使用 espree 将 JavaScript 解析成抽象语法树（AST），然后通过 AST 来分析我们代码。
