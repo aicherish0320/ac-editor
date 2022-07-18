@@ -1,9 +1,7 @@
-<script setup lang="ts">
-import Hello from './components/Hello'
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <Hello msg="累好啊"></Hello>
+  <a-button type="primary">Primary Button</a-button>
 </template>
 
 <style scoped></style>
