@@ -4,7 +4,21 @@ import Home from '../views/home/Index.vue'
 const routes = [
   {
     path: '/',
-    component: Home
+    component: Home,
+    children: [
+      {
+        path: '',
+        component: () => import('../views/content/Index.vue')
+      }
+    ]
+  },
+  {
+    path: '/editor',
+    component: () => import('../views/editor/Index.vue')
+  },
+  {
+    path: '/login',
+    component: () => import('../views/login/Index.vue')
   }
 ]
 

@@ -2,7 +2,7 @@
   <div class="content-card">
     <a-row :gutter="16">
       <a-col :span="6" v-for="item in 5" :key="item" class="card-item">
-        <a-card hoverable>
+        <a-card hoverable @click="onCardClick">
           <template #cover>
             <img
               alt="example"
@@ -18,7 +18,14 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const onCardClick = () => {
+  router.push('/editor')
+}
+</script>
 
 <style scoped lang="scss">
 .content-card {
