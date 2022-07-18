@@ -43,3 +43,9 @@ declare module '*.vue' {
 ## ESLint
 
 是一个开源的 JavaScript 的 linting 工具，使用 espree 将 JavaScript 解析成抽象语法树（AST），然后通过 AST 来分析我们代码。
+
+## Git Flow
+
+所有的这些规范都是针对特定的多人设定的，意在让多人协作的过程更顺畅，更简单，减少不必要的冲突和时间的浪费
+
+## Github Flow
