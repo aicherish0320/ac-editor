@@ -1,13 +1,6 @@
-<template>
-  <div :style="styleProps" class="ac-text-component">{{ text }}</div>
-</template>
+import { without } from 'lodash-es'
 
-<script setup lang="ts">
-import { computed } from 'vue'
-import { pick } from 'lodash-es'
-import { textStylePropNames } from '../common/defaultProps'
-
-interface TextComponentProps {
+export interface CommonComponentProps {
   // actions
   actionType: string
   url: string
@@ -31,20 +24,9 @@ interface TextComponentProps {
   left: string
   top: string
   right: string
-  // 特有的
-  text: string
-  fontSize: string
-  fontFamily: string
-  fontWeight: string
-  fontStyle: string
-  textDecoration: string
-  lineHeight: string
-  textAlign: string
-  color: string
-  backgroundColor: string
 }
 
-const props = withDefaults(defineProps<TextComponentProps>(), {
+export const commonDefaultProps: CommonComponentProps = {
   // actions
   actionType: '',
   url: '',
@@ -67,8 +49,24 @@ const props = withDefaults(defineProps<TextComponentProps>(), {
   position: 'absolute',
   left: '0',
   top: '0',
-  right: '0',
-  // 特有的
+  right: '0'
+}
+
+export interface TextComponentProps extends CommonComponentProps {
+  text: string
+  fontSize: string
+  fontFamily: string
+  fontWeight: string
+  fontStyle: string
+  textDecoration: string
+  lineHeight: string
+  textAlign: string
+  color: string
+  backgroundColor: string
+}
+
+export const textDefaultProps: TextComponentProps = {
+  // basic props - font styles
   text: '正文内容',
   fontSize: '14px',
   fontFamily: '',
@@ -78,10 +76,13 @@ const props = withDefaults(defineProps<TextComponentProps>(), {
   lineHeight: '1',
   textAlign: 'left',
   color: '#000000',
-  backgroundColor: ''
-})
+  backgroundColor: '',
+  ...commonDefaultProps
+}
 
-const styleProps = computed(() => pick(props, textStylePropNames))
-</script>
-
-<style scoped></style>
+export const textStylePropNames = without(
+  Object.keys(textDefaultProps),
+  'actionType',
+  'url',
+  'text'
+)

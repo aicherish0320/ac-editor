@@ -20,12 +20,12 @@ export const testComponents: ComponentData[] = [
   {
     id: uuidV4(),
     name: AcText,
-    props: { text: 'hello', fontSize: '20px' }
+    props: { text: 'hello', fontSize: '20px', top: '10px' }
   },
   {
     id: uuidV4(),
     name: AcText,
-    props: { text: 'hello2', fontSize: '30px' }
+    props: { text: 'hello2', fontSize: '30px', top: '40px' }
   }
 ]
 
