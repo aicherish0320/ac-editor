@@ -3,7 +3,7 @@
     <a-layout-header class="header">
       <b class="logo">爱鹊絮</b>
       <section class="btn">
-        <a-button type="link" @click="goLogin">登陆</a-button>
+        <router-link to="/login">登陆</router-link>
       </section>
     </a-layout-header>
     <a-layout-content class="content">
@@ -13,15 +13,7 @@
   </a-layout>
 </template>
 
-<script setup lang="ts">
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-const goLogin = () => {
-  router.push('/login')
-}
-</script>
+<script setup lang="ts"></script>
 
 <style scoped lang="scss">
 .header {

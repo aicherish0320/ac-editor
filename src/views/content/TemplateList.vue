@@ -19,7 +19,7 @@
 import { useRouter } from 'vue-router'
 import { TemplateProps } from '../../store/modules/templates'
 
-defineProps<{ list: { type: TemplateProps[]; required: true } }>()
+defineProps<{ list: TemplateProps[] }>()
 
 const router = useRouter()
 const onCardClick = () => {

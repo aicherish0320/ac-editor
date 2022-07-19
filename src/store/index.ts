@@ -1,5 +1,4 @@
 import { createStore } from 'vuex'
-import getters from './getters'
 import templates, { TemplatesProps } from './modules/templates'
 import user, { UserProps } from './modules/user'
 
@@ -9,7 +8,6 @@ export interface GlobalDataProps {
 }
 
 const store = createStore<GlobalDataProps>({
-  getters,
   modules: {
     user,
     templates
