@@ -1,7 +1,9 @@
 <template>
   <a-layout>
-    <a-layout-header class="header" @click="goHome">
-      <span class="title">作品名称</span>
+    <a-layout-header class="header">
+      <router-link to="/">
+        <span class="title">作品名称</span>
+      </router-link>
     </a-layout-header>
   </a-layout>
   <a-layout>
@@ -20,15 +22,7 @@
   </a-layout>
 </template>
 
-<script setup lang="ts">
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-const goHome = () => {
-  router.push('/')
-}
-</script>
+<script setup lang="ts"></script>
 
 <style scoped lang="scss">
 .header {
