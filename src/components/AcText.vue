@@ -1,11 +1,11 @@
 <template>
-  <div :style="styleProps" class="ac-text-component">{{ text }}</div>
+  <div :style="styleProps" class="ac-text-component" @click="handleClick">
+    {{ text }}
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { pick } from 'lodash-es'
-import { textStylePropNames } from '../common/defaultProps'
+import useComponentCommon from '../hooks/useComponentCommon'
 
 interface TextComponentProps {
   // actions
@@ -81,7 +81,7 @@ const props = withDefaults(defineProps<TextComponentProps>(), {
   backgroundColor: ''
 })
 
-const styleProps = computed(() => pick(props, textStylePropNames))
+const { styleProps, handleClick } = useComponentCommon(props)
 </script>
 
 <style scoped></style>
