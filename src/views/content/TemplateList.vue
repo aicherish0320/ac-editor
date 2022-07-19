@@ -1,16 +1,13 @@
 <template>
   <div class="content-card">
     <a-row :gutter="16">
-      <a-col :span="6" v-for="item in 5" :key="item" class="card-item">
+      <a-col :span="6" v-for="item in list" :key="item.id" class="card-item">
         <a-card hoverable @click="onCardClick">
           <template #cover>
-            <img
-              alt="example"
-              src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-            />
+            <img alt="example" :src="item.coverImg" />
           </template>
-          <a-card-meta title="Europe Street beat">
-            <template #description>www.instagram.com</template>
+          <a-card-meta :title="item.title">
+            <template #description>{{ item.author }}</template>
           </a-card-meta>
         </a-card>
       </a-col>
@@ -20,6 +17,9 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { TemplateProps } from '../../store/modules/templates'
+
+defineProps<{ list: { type: TemplateProps[]; required: true } }>()
 
 const router = useRouter()
 const onCardClick = () => {
