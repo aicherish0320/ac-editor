@@ -48,7 +48,7 @@ const goHome = () => {
 }
 .preview-container {
   background: #0f0;
-  min-height: 90vh;
+  height: calc(100vh - 64px);
   display: flex;
   flex-direction: column;
   align-items: center;
