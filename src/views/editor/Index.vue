@@ -36,7 +36,10 @@
       </a-layout-content>
     </a-layout>
     <a-layout-sider width="300" class="sider sider-right">
-      {{ currentElement?.props }}
+      组件属性
+      <template v-if="currentElement">
+        <PropsTable :props="currentElement.props"></PropsTable>
+      </template>
     </a-layout-sider>
   </a-layout>
 </template>
@@ -49,6 +52,7 @@ import ComponentsList from './ComponentsList.vue'
 import { defaultTextTemplates } from '@/common/defaultTemplates'
 import { ComponentData } from '@/store/modules/editor'
 import EditWrapper from './EditWrapper.vue'
+import PropsTable from './PropsTable.vue'
 
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
