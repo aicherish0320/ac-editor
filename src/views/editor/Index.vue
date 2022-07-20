@@ -38,9 +38,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useStore } from 'vuex'
-import { GlobalDataProps } from '../../store'
+import { GlobalDataProps } from '@/store'
 import ComponentsList from './ComponentsList.vue'
-import { defaultTextTemplates } from '../../common/defaultTemplates'
+import { defaultTextTemplates } from '@/common/defaultTemplates'
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
 

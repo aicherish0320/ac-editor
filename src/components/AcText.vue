@@ -1,11 +1,12 @@
 <template>
-  <div :style="styleProps" class="ac-text-component" @click="handleClick">
+  <div :style="style" class="ac-text-component" @click="handleClick">
     {{ text }}
   </div>
 </template>
 
 <script setup lang="ts">
-import useComponentCommon from '../hooks/useComponentCommon'
+import { CSSProperties } from 'vue'
+import useComponentCommon from '@/hooks/useComponentCommon'
 
 interface TextComponentProps {
   // actions
@@ -80,8 +81,9 @@ const props = withDefaults(defineProps<TextComponentProps>(), {
   color: '#000000',
   backgroundColor: ''
 })
-
 const { styleProps, handleClick } = useComponentCommon(props)
+// TODO
+const style = styleProps as any as CSSProperties
 </script>
 
 <style scoped></style>

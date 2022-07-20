@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { TemplateProps } from '../../store/modules/templates'
+import { TemplateProps } from '@/store/modules/templates'
 
 defineProps<{ list: TemplateProps[] }>()
 

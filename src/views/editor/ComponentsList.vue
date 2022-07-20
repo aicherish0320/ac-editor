@@ -5,11 +5,10 @@
 </template>
 
 <script setup lang="ts">
-import AcText from '../../components/AcText.vue'
+import { TextComponentProps } from '@/common/defaultProps'
+import AcText from '@/components/AcText.vue'
 
-defineProps({
-  list: Array
-})
+defineProps<{ list: Partial<TextComponentProps>[] }>()
 
 const emits = defineEmits(['on-item-click'])
 
