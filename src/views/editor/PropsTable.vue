@@ -1,7 +1,14 @@
 <template>
   <div class="props-table">
     <div v-for="(item, key) in finalProps" :key="key" class="prop-item">
-      <component :is="item?.component" :value="item?.value"></component>
+      <span class="label">{{ item?.text }}</span>
+      <div class="prop-component">
+        <component
+          :is="item?.component"
+          :value="item?.value"
+          v-bind="item?.extraProps"
+        ></component>
+      </div>
     </div>
   </div>
 </template>
@@ -33,4 +40,15 @@ const finalProps = computed(() => {
 })
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.prop-item {
+  display: flex;
+  margin-bottom: 10px;
+  .label {
+    width: 30%;
+  }
+  .prop-component {
+    width: 70%;
+  }
+}
+</style>
