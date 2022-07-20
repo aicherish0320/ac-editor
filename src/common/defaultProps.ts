@@ -2,28 +2,28 @@ import { without } from 'lodash-es'
 
 export interface CommonComponentProps {
   // actions
-  actionType: string
-  url: string
+  actionType?: string
+  url?: string
   // size
-  height: string
-  width: string
-  paddingLeft: string
-  paddingRight: string
-  paddingTop: string
-  paddingBottom: string
+  height?: string
+  width?: string
+  paddingLeft?: string
+  paddingRight?: string
+  paddingTop?: string
+  paddingBottom?: string
   // border type
-  borderStyle: string
-  borderColor: string
-  borderWidth: string
-  borderRadius: string
+  borderStyle?: string
+  borderColor?: string
+  borderWidth?: string
+  borderRadius?: string
   // shadow and opacity
-  boxShadow: string
-  opacity: string
+  boxShadow?: string
+  opacity?: string
   // position and x,y
-  position: string
-  left: string
-  top: string
-  right: string
+  position?: string
+  left?: string
+  top?: string
+  right?: string
 }
 
 export const commonDefaultProps: CommonComponentProps = {
@@ -53,16 +53,16 @@ export const commonDefaultProps: CommonComponentProps = {
 }
 
 export interface TextComponentProps extends CommonComponentProps {
-  text: string
-  fontSize: string
-  fontFamily: string
-  fontWeight: string
-  fontStyle: string
-  textDecoration: string
-  lineHeight: string
-  textAlign: string
-  color: string
-  backgroundColor: string
+  text?: string
+  fontSize?: string
+  fontFamily?: string
+  fontWeight?: string
+  fontStyle?: string
+  textDecoration?: string
+  lineHeight?: string
+  textAlign?: string
+  color?: string
+  backgroundColor?: string
 }
 
 export const textDefaultProps: TextComponentProps = {

@@ -1,3 +1,4 @@
+import { markRaw } from 'vue'
 import { Module } from 'vuex'
 import { v4 as uuidV4 } from 'uuid'
 import { GlobalDataProps } from '..'
@@ -20,12 +21,12 @@ export interface EditorProps {
 export const testComponents: ComponentData[] = [
   {
     id: uuidV4(),
-    name: AcText,
+    name: markRaw(AcText),
     props: { text: 'hello', fontSize: '20px', top: '10px' }
   },
   {
     id: uuidV4(),
-    name: AcText,
+    name: markRaw(AcText),
     props: { text: 'hello2', fontSize: '30px', top: '40px' }
   }
 ]
@@ -39,7 +40,7 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     addComponent(state, props: Partial<TextComponentProps>) {
       const newComponent: ComponentData = {
         id: uuidV4(),
-        name: AcText,
+        name: markRaw(AcText),
         props
       }
       state.components.push(newComponent)
