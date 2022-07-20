@@ -2,6 +2,7 @@ import { Module } from 'vuex'
 import { v4 as uuidV4 } from 'uuid'
 import { GlobalDataProps } from '../'
 import AcText from '../../components/AcText.vue'
+import { TextComponentProps } from '../../common/defaultProps'
 
 interface ComponentData {
   props: { [key: string]: any }
@@ -35,7 +36,7 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     currentElement: ''
   },
   mutations: {
-    addComponent(state, props) {
+    addComponent(state, props: Partial<TextComponentProps>) {
       const newComponent: ComponentData = {
         id: uuidV4(),
         name: AcText,
