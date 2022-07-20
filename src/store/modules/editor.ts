@@ -13,7 +13,7 @@ export interface EditorProps {
   // 供中间编辑器渲染的数组
   components: ComponentData[]
   // 当前编辑的是哪个元素，uuid
-  // currentElement: string
+  currentElement: string
 }
 
 export const testComponents: ComponentData[] = [
@@ -31,7 +31,18 @@ export const testComponents: ComponentData[] = [
 
 const editor: Module<EditorProps, GlobalDataProps> = {
   state: {
-    components: testComponents
+    components: testComponents,
+    currentElement: ''
+  },
+  mutations: {
+    addComponent(state, props) {
+      const newComponent: ComponentData = {
+        id: uuidV4(),
+        name: AcText,
+        props
+      }
+      state.components.push(newComponent)
+    }
   }
 }
 

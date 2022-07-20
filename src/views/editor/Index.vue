@@ -8,7 +8,13 @@
   </a-layout>
   <a-layout>
     <a-layout-sider width="300" class="sider sider-left">
-      <section class="title">组件列表</section>
+      <section class="title">
+        组件列表
+        <ComponentsList
+          :list="defaultTextTemplates"
+          @onItemClick="addItem"
+        ></ComponentsList>
+      </section>
     </a-layout-sider>
     <a-layout>
       <a-layout-content class="preview-container">
@@ -33,10 +39,14 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '../../store'
-
+import ComponentsList from './ComponentsList.vue'
+import { defaultTextTemplates } from '../../common/defaultTemplates'
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
-console.log('components >>> ', components.value)
+
+const addItem = (props: any) => {
+  store.commit('addComponent', props)
+}
 </script>
 
 <style scoped lang="scss">
@@ -48,15 +58,8 @@ console.log('components >>> ', components.value)
 }
 .sider {
   background: #fff;
-  &-left {
-    // background: #f0f;
-  }
-  &-right {
-    // background: #00f;
-  }
 }
 .preview-container {
-  // background: #0f0;
   height: calc(100vh - 64px);
   display: flex;
   flex-direction: column;
