@@ -20,17 +20,23 @@
       <a-layout-content class="preview-container">
         <section>画布区域</section>
         <section class="preview-list">
-          <component
+          <EditWrapper
             v-for="component in components"
             :key="component.id"
-            :is="component.name"
-            v-bind="component.props"
-          ></component>
+            :id="component.id"
+            :active="component.id === (currentElement && currentElement.id)"
+            @set-active="setActive"
+          >
+            <component
+              :is="component.name"
+              v-bind="component.props"
+            ></component>
+          </EditWrapper>
         </section>
       </a-layout-content>
     </a-layout>
     <a-layout-sider width="300" class="sider sider-right">
-      sider right
+      {{ currentElement?.props }}
     </a-layout-sider>
   </a-layout>
 </template>
@@ -41,11 +47,20 @@ import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store'
 import ComponentsList from './ComponentsList.vue'
 import { defaultTextTemplates } from '@/common/defaultTemplates'
+import { ComponentData } from '@/store/modules/editor'
+import EditWrapper from './EditWrapper.vue'
+
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
+const currentElement = computed<ComponentData | null>(
+  () => store.getters.getCurrentElement
+)
 
 const addItem = (props: any) => {
   store.commit('addComponent', props)
+}
+const setActive = (id: string) => {
+  store.commit('setActive', id)
 }
 </script>
 
@@ -58,6 +73,9 @@ const addItem = (props: any) => {
 }
 .sider {
   background: #fff;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100vh - 64px);
 }
 .preview-container {
   height: calc(100vh - 64px);

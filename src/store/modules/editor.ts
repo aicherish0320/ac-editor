@@ -5,7 +5,7 @@ import { GlobalDataProps } from '..'
 import AcText from '@/components/AcText.vue'
 import { TextComponentProps } from '@/common/defaultProps'
 
-interface ComponentData {
+export interface ComponentData {
   props: { [key: string]: any }
   id: string
   name: any
@@ -36,6 +36,13 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     components: testComponents,
     currentElement: ''
   },
+  getters: {
+    getCurrentElement(state) {
+      return state.components.find(
+        (component) => component.id === state.currentElement
+      )
+    }
+  },
   mutations: {
     addComponent(state, props: Partial<TextComponentProps>) {
       const newComponent: ComponentData = {
@@ -44,6 +51,9 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         props
       }
       state.components.push(newComponent)
+    },
+    setActive(state, currentId: string) {
+      state.currentElement = currentId
     }
   }
 }
