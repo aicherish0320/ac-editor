@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/home/Index.vue'
+import Home from '@/views/home/Index.vue'
 
 const routes = [
   {
@@ -8,17 +8,17 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import('../views/content/Index.vue')
+        component: () => import('@/views/content/Index.vue')
       }
     ]
   },
   {
     path: '/editor',
-    component: () => import('../views/editor/Index.vue')
+    component: () => import('@/views/editor/Index.vue')
   },
   {
     path: '/login',
-    component: () => import('../views/login/Index.vue')
+    component: () => import('@/views/login/Index.vue')
   }
 ]
 

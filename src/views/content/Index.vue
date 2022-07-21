@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useStore } from 'vuex'
-import { GlobalDataProps } from '../../store'
+import { GlobalDataProps } from '@/store'
 import TemplateList from './TemplateList.vue'
 
 const store = useStore<GlobalDataProps>()

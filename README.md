@@ -49,3 +49,9 @@ declare module '*.vue' {
 所有的这些规范都是针对特定的多人设定的，意在让多人协作的过程更顺畅，更简单，减少不必要的冲突和时间的浪费
 
 ## Github Flow
+
+## Vue 组件的三种形式
+
+- SFC 单文件组件（混合三种标签，返回 vue 的 template）
+- 函数组件 Function Component（函数形式，使用 jsx 或者 h 函数）
+- render function （对象形式，使用对象上的 render 方法返回，使用 jsx 或者 h 函数）
