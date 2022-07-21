@@ -7,7 +7,17 @@
           :is="item?.component"
           :value="item?.value"
           v-bind="item?.extraProps"
-        ></component>
+        >
+          <template v-if="item?.options">
+            <component
+              :is="item.subComponent"
+              v-for="(option, k) in item.options"
+              :key="k"
+            >
+              {{ option.text }}
+            </component>
+          </template>
+        </component>
       </div>
     </div>
   </div>
@@ -30,7 +40,9 @@ const finalProps = computed(() => {
       const newKey = key as keyof TextComponentProps
       const item = mapPropsToForms[newKey]
       if (item) {
-        item.value = value
+        item.value = item.initialTransform
+          ? item.initialTransform(value)
+          : value
         result[newKey] = item
       }
       return result

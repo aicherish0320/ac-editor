@@ -22,7 +22,14 @@ export const testComponents: ComponentData[] = [
   {
     id: uuidV4(),
     name: markRaw(AcText),
-    props: { text: 'hello', fontSize: '20px', top: '10px', lineHeight: '1' }
+    props: {
+      text: 'hello',
+      fontSize: '20px',
+      top: '10px',
+      lineHeight: '1',
+      textAlign: 'center',
+      fontFamily: '黑体'
+    }
   },
   {
     id: uuidV4(),
