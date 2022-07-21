@@ -38,7 +38,10 @@
     <a-layout-sider width="300" class="sider sider-right">
       组件属性
       <template v-if="currentElement">
-        <PropsTable :props="currentElement.props"></PropsTable>
+        <PropsTable
+          :props="currentElement.props"
+          @change="handleChange"
+        ></PropsTable>
       </template>
     </a-layout-sider>
   </a-layout>
@@ -65,6 +68,10 @@ const addItem = (props: any) => {
 }
 const setActive = (id: string) => {
   store.commit('setActive', id)
+}
+
+const handleChange = (e: any) => {
+  console.log('e >>> ', e)
 }
 </script>
 

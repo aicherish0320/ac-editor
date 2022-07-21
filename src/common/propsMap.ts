@@ -18,11 +18,13 @@ import 'ant-design-vue/es/select/style/index.css'
 export interface PropToForm {
   component: any
   subComponent?: any
-  value?: string
   extraProps?: { [key: string]: any }
   text?: string
   options?: { text: string; value: any }[]
   initialTransform?: (v: any) => any
+  afterTransform?: (v: any) => any
+  valueProp?: string
+  eventName?: string
 }
 
 export type PropsToForms = {
@@ -33,7 +35,8 @@ export const mapPropsToForms: PropsToForms = {
   text: {
     component: markRaw(Textarea),
     extraProps: { rows: 3 },
-    text: '文本'
+    text: '文本',
+    afterTransform: (e: any) => e.target.value
   },
   fontSize: {
     component: markRaw(InputNumber),
@@ -48,26 +51,19 @@ export const mapPropsToForms: PropsToForms = {
       step: 0.1
     },
     text: '行高',
-    initialTransform: (v: string) => parseFloat(v)
+    initialTransform: (v: string) => parseFloat(v),
+    afterTransform: (e: number) => e.toString()
   },
   textAlign: {
     component: markRaw(RadioGroup),
     subComponent: markRaw(RadioButton),
     text: '对齐',
     options: [
-      {
-        value: 'left',
-        text: '左'
-      },
-      {
-        value: 'center',
-        text: '中'
-      },
-      {
-        value: 'right',
-        text: '右'
-      }
-    ]
+      { value: 'left', text: '左' },
+      { value: 'center', text: '中' },
+      { value: 'right', text: '右' }
+    ],
+    afterTransform: (e: any) => e.target.value
   },
   fontFamily: {
     component: markRaw(Select),
