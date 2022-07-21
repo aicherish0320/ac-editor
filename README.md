@@ -55,3 +55,18 @@ declare module '*.vue' {
 - SFC 单文件组件（混合三种标签，返回 vue 的 template）
 - 函数组件 Function Component（函数形式，使用 jsx 或者 h 函数）
 - render function （对象形式，使用对象上的 render 方法返回，使用 jsx 或者 h 函数）
+
+## 文件上传
+
+### 传统模式
+
+```html
+<form method="post" enctype="multipart/form-data">
+  <input type="file" />
+</form>
+```
+
+### 使用异步 API 上传
+
+- ajax
+- fetch
