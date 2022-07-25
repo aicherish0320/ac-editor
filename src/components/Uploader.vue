@@ -1,6 +1,10 @@
 <template>
   <div class="file-upload">
-    <div class="upload-area" @click="triggerUpload">
+    <div
+      class="upload-area"
+      :class="{ 'is-dragover': drag && isDragOver }"
+      v-on="events"
+    >
       <slot v-if="isUploading" name="loading">
         <a-button type="primary" disabled>正在上传</a-button>
       </slot>
@@ -39,7 +43,7 @@
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue'
 import { v4 as uuidV4 } from 'uuid'
-import { last, result } from 'lodash-es'
+import { last } from 'lodash-es'
 
 type UploadStatus = 'ready' | 'loading' | 'success' | 'error'
 type CheckUpload = (file: File) => boolean | Promise<File>
@@ -53,13 +57,18 @@ interface UploadFile {
   resp?: any
 }
 
-const props = defineProps<{
-  action: string
-  beforeUpload?: CheckUpload
-}>()
+const props = withDefaults(
+  defineProps<{
+    action: string
+    beforeUpload?: CheckUpload
+    drag?: boolean
+  }>(),
+  { drag: false }
+)
 
 const fileInput = ref<null | HTMLInputElement>(null)
 const fileStatus = ref<UploadStatus>('ready')
+const isDragOver = ref(false)
 const triggerUpload = () => {
   if (fileInput.value) {
     fileInput.value.click()
@@ -116,9 +125,7 @@ const postFile = (uploadedFile: File) => {
     })
 }
 
-const handleFileChange = (e: Event) => {
-  const target = e.target as HTMLInputElement
-  const files = target.files
+const uploadFiles = (files: null | FileList) => {
   if (files) {
     const uploadedFile = files[0]
     if (props.beforeUpload) {
@@ -139,6 +146,49 @@ const handleFileChange = (e: Event) => {
     }
   }
 }
+
+const handleFileChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  uploadFiles(target.files)
+}
+
+let events: { [key: string]: (e: any) => void } = {
+  click: triggerUpload
+}
+const handleDrag = (e: DragEvent, over: boolean) => {
+  e.preventDefault()
+  isDragOver.value = over
+}
+
+const handleDrop = (e: DragEvent) => {
+  e.preventDefault()
+  const files = e.dataTransfer?.files
+  if (files) {
+    uploadFiles(files)
+  }
+
+  isDragOver.value = false
+}
+
+if (props.drag) {
+  events = {
+    ...events,
+    dragover: (e: DragEvent) => {
+      handleDrag(e, true)
+    },
+    dragleave: (e: DragEvent) => {
+      handleDrag(e, false)
+    },
+    drop: handleDrop
+  }
+}
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.upload-area {
+  border: 1px solid #ccc;
+  &.is-dragover {
+    border: 1px solid red;
+  }
+}
+</style>

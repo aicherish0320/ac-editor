@@ -14,7 +14,7 @@
           :list="defaultTextTemplates"
           @onItemClick="addItem"
         ></ComponentsList>
-        <Uploader action="http://localhost:3300/upload" />
+        <Uploader action="http://localhost:3300/upload" :drag="true" />
       </section>
     </a-layout-sider>
     <a-layout>
