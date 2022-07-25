@@ -75,3 +75,9 @@ declare module '*.vue' {
 
 - `dragover` 和 `dragleave` 添加或者删除对应的 class
 - `drop` 事件拿到正在被拖拽的文件，删除 class 并且触发上传
+
+### 图片预览的方式
+
+- `URL.createObjectURL()`
+  - 一个静态方法，创建一个 DOMString，返回一个 URL，URL 和 document 绑定，表示指定的 File 对象
+- `FileReader.readAsDataURL()`

@@ -27,26 +27,27 @@
     />
     <ul v-if="showUploadList">
       <li
-        :class="`uploaded-file upload-${uploadedFile.status}`"
-        v-for="uploadedFile in uploadedFiles"
-        :key="uploadedFile.uid"
+        :class="`uploaded-file upload-${file.status}`"
+        v-for="file in filesList"
+        :key="file.uid"
       >
-        <span> {{ uploadedFile.name }}</span>
-        <a-button type="danger" @click="removeFile(uploadedFile.uid)"
-          >Del</a-button
-        >
+        <img v-if="file.url" :src="file.url" alt="img" width="60" />
+        <span> {{ file.name }}</span>
+        <a-button type="danger" @click="removeFile(file.uid)">Del</a-button>
       </li>
     </ul>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, PropType } from 'vue'
 import { v4 as uuidV4 } from 'uuid'
 import { last } from 'lodash-es'
+import { read } from 'fs'
 
 type UploadStatus = 'ready' | 'loading' | 'success' | 'error'
 type CheckUpload = (file: File) => boolean | Promise<File>
+type FileListType = 'picture' | 'text'
 
 interface UploadFile {
   uid: string
@@ -55,6 +56,7 @@ interface UploadFile {
   status: UploadStatus
   raw: File
   resp?: any
+  url?: string
 }
 
 const props = withDefaults(
@@ -64,13 +66,13 @@ const props = withDefaults(
     drag?: boolean
     autoUpload?: boolean
     showUploadList?: boolean
+    listType?: FileListType
   }>(),
-  { drag: false, autoUpload: true, showUploadList: false }
+  { drag: false, autoUpload: true, showUploadList: false, listType: 'text' }
 )
 const emits = defineEmits(['success', 'error'])
 
 const fileInput = ref<null | HTMLInputElement>(null)
-const fileStatus = ref<UploadStatus>('ready')
 const isDragOver = ref(false)
 const filesList = ref<UploadFile[]>([])
 
@@ -136,6 +138,24 @@ const addFileToList = (uploadedFile: File) => {
     status: 'loading',
     raw: uploadedFile
   })
+  if (props.listType === 'picture') {
+    try {
+      // 解法一
+      // fileObj.url = URL.createObjectURL(uploadedFile)
+      // 解法二
+      const reader = new FileReader()
+      reader.readAsDataURL(uploadedFile)
+      reader.addEventListener(
+        'load',
+        () => {
+          fileObj.url = reader.result as string
+        },
+        false
+      )
+    } catch (error) {
+      console.error(error)
+    }
+  }
   uploadedFiles.value.push(fileObj)
   filesList.value.push(fileObj)
   if (props.autoUpload) {
