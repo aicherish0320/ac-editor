@@ -39,9 +39,10 @@
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue'
 import { v4 as uuidV4 } from 'uuid'
-import { last } from 'lodash-es'
+import { last, result } from 'lodash-es'
 
 type UploadStatus = 'ready' | 'loading' | 'success' | 'error'
+type CheckUpload = (file: File) => boolean | Promise<File>
 
 interface UploadFile {
   uid: string
@@ -54,6 +55,7 @@ interface UploadFile {
 
 const props = defineProps<{
   action: string
+  beforeUpload?: CheckUpload
 }>()
 
 const fileInput = ref<null | HTMLInputElement>(null)
@@ -81,42 +83,60 @@ const removeFile = (id: string) => {
   uploadedFiles.value = uploadedFiles.value.filter((file) => file.uid !== id)
 }
 
+const postFile = (uploadedFile: File) => {
+  const formData = new FormData()
+  formData.append('file', uploadedFile)
+  const fileObj = reactive<UploadFile>({
+    uid: uuidV4(),
+    size: uploadedFile.size,
+    name: uploadedFile.name,
+    status: 'loading',
+    raw: uploadedFile
+  })
+  uploadedFiles.value.push(fileObj)
+
+  fetch(props.action, {
+    method: 'post',
+    body: formData
+  })
+    .then((response) => response.json())
+    .then((resp) => {
+      fileObj.resp = resp.data
+      fileStatus.value = 'success'
+      fileObj.status = 'success'
+    })
+    .catch(() => {
+      fileStatus.value = 'error'
+      fileObj.status = 'error'
+    })
+    .finally(() => {
+      if (fileInput.value) {
+        fileInput.value.value = ''
+      }
+    })
+}
+
 const handleFileChange = (e: Event) => {
   const target = e.target as HTMLInputElement
   const files = target.files
   if (files) {
-    fileStatus.value = 'loading'
     const uploadedFile = files[0]
-    const formData = new FormData()
-    formData.append('file', uploadedFile)
-    const fileObj = reactive<UploadFile>({
-      uid: uuidV4(),
-      size: uploadedFile.size,
-      name: uploadedFile.name,
-      status: 'loading',
-      raw: uploadedFile
-    })
-    uploadedFiles.value.push(fileObj)
-
-    fetch(props.action, {
-      method: 'post',
-      body: formData
-    })
-      .then((response) => response.json())
-      .then((resp) => {
-        fileObj.resp = resp.data
-        fileStatus.value = 'success'
-        fileObj.status = 'success'
-      })
-      .catch(() => {
-        fileStatus.value = 'error'
-        fileObj.status = 'error'
-      })
-      .finally(() => {
-        if (fileInput.value) {
-          fileInput.value.value = ''
-        }
-      })
+    if (props.beforeUpload) {
+      const ret = props.beforeUpload(uploadedFile)
+      if (ret && ret instanceof Promise) {
+        ret
+          .then((processFile) => {
+            postFile(processFile)
+          })
+          .catch((e) => {
+            console.error(e)
+          })
+      } else if (ret) {
+        postFile(uploadedFile)
+      }
+    } else {
+      postFile(uploadedFile)
+    }
   }
 }
 </script>
