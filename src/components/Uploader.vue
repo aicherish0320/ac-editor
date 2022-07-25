@@ -43,7 +43,6 @@
 import { reactive, ref, computed, PropType } from 'vue'
 import { v4 as uuidV4 } from 'uuid'
 import { last } from 'lodash-es'
-import { read } from 'fs'
 
 type UploadStatus = 'ready' | 'loading' | 'success' | 'error'
 type CheckUpload = (file: File) => boolean | Promise<File>
