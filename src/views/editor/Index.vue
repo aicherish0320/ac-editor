@@ -14,13 +14,6 @@
           :list="defaultTextTemplates"
           @onItemClick="addItem"
         ></ComponentsList>
-        <!-- <Uploader
-          action="http://localhost:3300/upload"
-          :drag="true"
-          :showUploadList="true"
-          list-type="picture"
-        /> -->
-        <StyleUploader></StyleUploader>
       </section>
     </a-layout-sider>
     <a-layout>
@@ -63,8 +56,6 @@ import { defaultTextTemplates } from '@/common/defaultTemplates'
 import { ComponentData } from '@/store/modules/editor'
 import EditWrapper from './EditWrapper.vue'
 import PropsTable from './PropsTable.vue'
-import StyleUploader from '@/components/StyleUploader.vue'
-// import Uploader from '@/components/Uploader.vue'
 
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
@@ -72,8 +63,8 @@ const currentElement = computed<ComponentData | null>(
   () => store.getters.getCurrentElement
 )
 
-const addItem = (props: any) => {
-  store.commit('addComponent', props)
+const addItem = (component: any) => {
+  store.commit('addComponent', component)
 }
 const setActive = (id: string) => {
   store.commit('setActive', id)
@@ -81,6 +72,7 @@ const setActive = (id: string) => {
 
 const handleChange = (e: any) => {
   console.log('e >>> ', e)
+  store.commit('updateComponent', e)
 }
 </script>
 

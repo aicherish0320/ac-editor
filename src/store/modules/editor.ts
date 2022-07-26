@@ -3,10 +3,10 @@ import { Module } from 'vuex'
 import { v4 as uuidV4 } from 'uuid'
 import { GlobalDataProps } from '..'
 import AcText from '@/components/AcText.vue'
-import { TextComponentProps } from '@/common/defaultProps'
+import { ImageComponentProps, TextComponentProps } from '@/common/defaultProps'
 
 export interface ComponentData {
-  props: { [key: string]: any }
+  props: Partial<TextComponentProps & ImageComponentProps>
   id: string
   name: any
 }
@@ -51,16 +51,20 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     }
   },
   mutations: {
-    addComponent(state, props: Partial<TextComponentProps>) {
-      const newComponent: ComponentData = {
-        id: uuidV4(),
-        name: markRaw(AcText),
-        props
-      }
-      state.components.push(newComponent)
+    addComponent(state, component: ComponentData) {
+      console.log('ComponentData >>> ', component)
+      state.components.push(component)
     },
     setActive(state, currentId: string) {
       state.currentElement = currentId
+    },
+    updateComponent(state, { key, value }) {
+      const updatedComponent = state.components.find(
+        (component) => component.id === state.currentElement
+      )
+      if (updatedComponent) {
+        updatedComponent.props[key as keyof TextComponentProps] = value
+      }
     }
   }
 }
