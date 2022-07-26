@@ -25,8 +25,8 @@ const onItemClick = (id: string) => {
   // position: absolute;
   & > * {
     position: static !important;
-    width: 100% !important;
-    height: 100% !important;
+    // width: 100% !important;
+    // height: 100% !important;
   }
   &:hover {
     border: 1px dashed #ccc;

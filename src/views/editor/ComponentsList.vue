@@ -14,6 +14,7 @@ import { markRaw } from 'vue'
 import { v4 as uuidV4 } from 'uuid'
 import { message } from 'ant-design-vue'
 import StyleUploader from '@/components/StyleUploader.vue'
+import { getImageDimensions } from '@/helpers'
 
 defineProps<{ list: Partial<TextComponentProps>[] }>()
 
@@ -39,7 +40,12 @@ const onImageUploaded = (data: any) => {
   }
   message.success('上传成功')
   componentData.props.src = data.resp.url
-  emits('on-item-click', componentData)
+  getImageDimensions(data.resp.url).then(({ width }) => {
+    console.log(width)
+    const maxWidth = 373
+    componentData.props.width = (width > maxWidth ? maxWidth : width) + 'px'
+    emits('on-item-click', componentData)
+  })
 }
 </script>
 
