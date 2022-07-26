@@ -3,7 +3,13 @@ import { Module } from 'vuex'
 import { v4 as uuidV4 } from 'uuid'
 import { GlobalDataProps } from '..'
 import AcText from '@/components/AcText.vue'
-import { ImageComponentProps, TextComponentProps } from '@/common/defaultProps'
+import AcImage from '@/components/AcImage.vue'
+import {
+  ImageComponentProps,
+  imageDefaultProps,
+  TextComponentProps,
+  textDefaultProps
+} from '@/common/defaultProps'
 
 export interface ComponentData {
   props: Partial<TextComponentProps & ImageComponentProps>
@@ -23,6 +29,7 @@ export const testComponents: ComponentData[] = [
     id: uuidV4(),
     name: markRaw(AcText),
     props: {
+      ...textDefaultProps,
       text: 'hello',
       fontSize: '20px',
       top: '10px',
@@ -34,7 +41,21 @@ export const testComponents: ComponentData[] = [
   {
     id: uuidV4(),
     name: markRaw(AcText),
-    props: { text: 'hello2', fontSize: '30px', top: '40px' }
+    props: {
+      ...textDefaultProps,
+      text: 'hello2',
+      fontSize: '30px',
+      top: '40px'
+    }
+  },
+  {
+    id: uuidV4(),
+    name: markRaw(AcImage),
+    props: {
+      ...imageDefaultProps,
+      src: 'http://localhost:3300/uploads/backet.png',
+      width: '100px'
+    }
   }
 ]
 

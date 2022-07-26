@@ -1,5 +1,6 @@
 import { markRaw, VNode, h } from 'vue'
 import { TextComponentProps } from './defaultProps'
+import ColorPicker from '@/components/ColorPicker.vue'
 import {
   Textarea,
   InputNumber,
@@ -7,7 +8,8 @@ import {
   RadioButton,
   RadioGroup,
   Select,
-  SelectOption
+  SelectOption,
+  Input
 } from 'ant-design-vue'
 import 'ant-design-vue/es/input/style/index.css'
 import 'ant-design-vue/es/input-number/style/index.css'
@@ -50,6 +52,14 @@ const pxToNumberHandler: PropToForm = {
   afterTransform: (e: number) => (e ? `${e}px` : '')
 }
 
+const defaultHandler = {
+  component: markRaw(Input),
+  eventName: 'change',
+  valueProp: 'value',
+  initialTransform: (v: any) => v,
+  afterTransform: (e: any) => e
+}
+
 export const mapPropsToForms: PropsToForms = {
   text: {
     component: markRaw(Textarea),
@@ -88,5 +98,114 @@ export const mapPropsToForms: PropsToForms = {
     subComponent: markRaw(SelectOption),
     text: '字体',
     options: [{ text: '无', value: '' }, ...fontFamilyOptions]
+  },
+  width: {
+    text: '宽度',
+    ...pxToNumberHandler
+  },
+  height: {
+    text: '高度',
+    ...pxToNumberHandler
+  },
+  paddingLeft: {
+    ...pxToNumberHandler,
+    text: '左边距'
+  },
+  paddingRight: {
+    ...pxToNumberHandler,
+    text: '右边距'
+  },
+  paddingTop: {
+    ...pxToNumberHandler,
+    text: '上边距'
+  },
+  paddingBottom: {
+    ...pxToNumberHandler,
+    text: '下边距'
+  },
+  color: {
+    text: '字体颜色',
+    component: markRaw(ColorPicker)
+  },
+  backgroundColor: {
+    text: '背景颜色',
+    component: markRaw(ColorPicker)
+  },
+  borderStyle: {
+    ...defaultHandler,
+    component: markRaw(Select),
+    subComponent: markRaw(SelectOption),
+    text: '边框类型',
+    options: [
+      {
+        value: 'none',
+        text: '无'
+      },
+      {
+        value: 'solid',
+        text: '实线'
+      },
+      {
+        value: 'dashed',
+        text: '破折线'
+      },
+      {
+        value: 'dotted',
+        text: '点状线'
+      }
+    ]
+  },
+  borderColor: {
+    ...defaultHandler,
+    component: markRaw(ColorPicker),
+    text: '边框颜色'
+  },
+  borderWidth: {
+    ...pxToNumberHandler,
+    component: markRaw(Slider),
+    text: '边框宽度',
+    extraProps: { min: 0, max: 20 }
+  },
+  borderRadius: {
+    ...pxToNumberHandler,
+    component: markRaw(Slider),
+    text: '边框圆角',
+    extraProps: { min: 0, max: 20 }
+  },
+  opacity: {
+    component: markRaw(Slider),
+    text: '透明度',
+    initialTransform: (v: number) => (v ? v * 100 : 100),
+    afterTransform: (e: number) => e / 100,
+    extraProps: { min: 0, max: 100, reverse: true }
+  },
+  left: {
+    text: 'X轴坐标',
+    ...pxToNumberHandler
+  },
+  top: {
+    text: 'Y轴坐标',
+    ...pxToNumberHandler
+  },
+  actionType: {
+    ...defaultHandler,
+    component: markRaw(Select),
+    subComponent: markRaw(SelectOption),
+    text: '点击',
+    options: [
+      {
+        value: '',
+        text: '无'
+      },
+      {
+        value: '',
+        text: '跳转到 URL'
+      }
+    ]
+  },
+  url: {
+    ...defaultHandler,
+    afterTransform: (e: any) => e.target.value,
+    text: '链接'
   }
 }
