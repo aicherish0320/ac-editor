@@ -81,3 +81,9 @@ declare module '*.vue' {
 - `URL.createObjectURL()`
   - 一个静态方法，创建一个 DOMString，返回一个 URL，URL 和 document 绑定，表示指定的 File 对象
 - `FileReader.readAsDataURL()`
+
+### Vue3 的三种实例
+
+- `App Instance` 应用实例 createApp
+- `Component Instance` 组件实例 ref 或者 app.mount 返回
+- `Component Internal Instance` 组件内部实例 getInternalInstance
