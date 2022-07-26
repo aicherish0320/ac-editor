@@ -52,7 +52,6 @@ const editor: Module<EditorProps, GlobalDataProps> = {
   },
   mutations: {
     addComponent(state, component: ComponentData) {
-      console.log('ComponentData >>> ', component)
       state.components.push(component)
     },
     setActive(state, currentId: string) {
