@@ -63,8 +63,8 @@ const currentElement = computed<ComponentData | null>(
   () => store.getters.getCurrentElement
 )
 
-const addItem = (props: any) => {
-  store.commit('addComponent', props)
+const addItem = (component: any) => {
+  store.commit('addComponent', component)
 }
 const setActive = (id: string) => {
   store.commit('setActive', id)
@@ -72,6 +72,7 @@ const setActive = (id: string) => {
 
 const handleChange = (e: any) => {
   console.log('e >>> ', e)
+  store.commit('updateComponent', e)
 }
 </script>
 

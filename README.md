@@ -55,3 +55,35 @@ declare module '*.vue' {
 - SFC 单文件组件（混合三种标签，返回 vue 的 template）
 - 函数组件 Function Component（函数形式，使用 jsx 或者 h 函数）
 - render function （对象形式，使用对象上的 render 方法返回，使用 jsx 或者 h 函数）
+
+## 文件上传
+
+### 传统模式
+
+```html
+<form method="post" enctype="multipart/form-data">
+  <input type="file" />
+</form>
+```
+
+### 使用异步 API 上传
+
+- ajax
+- fetch
+
+### 拖拽上传
+
+- `dragover` 和 `dragleave` 添加或者删除对应的 class
+- `drop` 事件拿到正在被拖拽的文件，删除 class 并且触发上传
+
+### 图片预览的方式
+
+- `URL.createObjectURL()`
+  - 一个静态方法，创建一个 DOMString，返回一个 URL，URL 和 document 绑定，表示指定的 File 对象
+- `FileReader.readAsDataURL()`
+
+### Vue3 的三种实例
+
+- `App Instance` 应用实例 createApp
+- `Component Instance` 组件实例 ref 或者 app.mount 返回
+- `Component Internal Instance` 组件内部实例 getInternalInstance

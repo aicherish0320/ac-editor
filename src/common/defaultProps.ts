@@ -86,3 +86,17 @@ export const textStylePropNames = without(
   'url',
   'text'
 )
+
+export interface ImageComponentProps extends CommonComponentProps {
+  src: string
+}
+
+export const imageDefaultProps: ImageComponentProps = {
+  src: 'test.url',
+  ...commonDefaultProps
+}
+
+export const imageStylePropsNames = without(
+  Object.keys(imageDefaultProps),
+  'src'
+)

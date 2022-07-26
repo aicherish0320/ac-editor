@@ -44,6 +44,12 @@ const fontFamilyOptions = fontFamilyArr.map((font) => {
   }
 })
 
+const pxToNumberHandler: PropToForm = {
+  component: markRaw(InputNumber),
+  initialTransform: (v: string) => (v ? parseInt(v) : 0),
+  afterTransform: (e: number) => (e ? `${e}px` : '')
+}
+
 export const mapPropsToForms: PropsToForms = {
   text: {
     component: markRaw(Textarea),
@@ -52,9 +58,8 @@ export const mapPropsToForms: PropsToForms = {
     afterTransform: (e: any) => e.target.value
   },
   fontSize: {
-    component: markRaw(InputNumber),
     text: '字号',
-    initialTransform: (v: string) => parseFloat(v)
+    ...pxToNumberHandler
   },
   lineHeight: {
     component: markRaw(Slider),
