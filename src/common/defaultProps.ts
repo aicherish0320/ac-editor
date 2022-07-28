@@ -100,3 +100,5 @@ export const imageStylePropsNames = without(
   Object.keys(imageDefaultProps),
   'src'
 )
+
+export declare type AllComponentProps = TextComponentProps & ImageComponentProps

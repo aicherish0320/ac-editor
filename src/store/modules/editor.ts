@@ -52,7 +52,6 @@ export const testComponents: ComponentData[] = [
     id: uuidV4(),
     name: markRaw(AcImage),
     props: {
-      ...imageDefaultProps,
       src: 'http://localhost:3300/uploads/backet.png',
       width: '100px'
     }

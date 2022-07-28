@@ -36,6 +36,7 @@
       </a-layout-content>
     </a-layout>
     <a-layout-sider width="300" class="sider sider-right">
+      <pre>{{ currentElement?.props }}</pre>
       组件属性
       <template v-if="currentElement">
         <PropsTable

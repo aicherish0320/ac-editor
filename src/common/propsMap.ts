@@ -1,6 +1,7 @@
 import { markRaw, VNode, h } from 'vue'
-import { TextComponentProps } from './defaultProps'
+import { AllComponentProps } from './defaultProps'
 import ColorPicker from '@/components/ColorPicker.vue'
+import ImageProcessor from '@/components/ImageProcessor.vue'
 import {
   Textarea,
   InputNumber,
@@ -30,7 +31,7 @@ export interface PropToForm {
 }
 
 export type PropsToForms = {
-  [P in keyof TextComponentProps]?: PropToForm
+  [P in keyof AllComponentProps]?: PropToForm
 }
 
 const fontFamilyArr = [
@@ -207,5 +208,8 @@ export const mapPropsToForms: PropsToForms = {
     ...defaultHandler,
     afterTransform: (e: any) => e.target.value,
     text: '链接'
+  },
+  src: {
+    component: markRaw(ImageProcessor)
   }
 }
