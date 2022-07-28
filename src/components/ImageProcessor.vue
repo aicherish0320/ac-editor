@@ -9,7 +9,7 @@
       cancelText="取消"
     >
       <div class="image-cropper">
-        <img :src="value" id="processed-image" ref="cropperImg" />
+        <img :src="baseImageUrl" id="processed-image" ref="cropperImg" />
       </div>
     </AModal>
     <div
@@ -48,13 +48,33 @@ const props = withDefaults(
 )
 const emits = defineEmits(['change'])
 
+interface CropDataProps {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
 const showModal = ref(false)
 let cropper: Cropper
+let cropData: CropDataProps | null = null
 const cropperImg = ref<null | HTMLImageElement>(null)
 const backgroundUrl = computed(() => `url(${props.value})`)
+const baseImageUrl = computed(() => props.value.split('?')[0])
 
-const handleOk = () => {}
-const handleCancel = () => {}
+const handleOk = () => {
+  if (cropData) {
+    const { x, y, width, height } = cropData
+    const cropperURL =
+      baseImageUrl.value +
+      `?x-oss-process=image/crop,x_${x},y_${y},w_${width},h_${height}`
+    emits('change', cropperURL)
+    showModal.value = false
+  }
+}
+const handleCancel = () => {
+  showModal.value = false
+}
 const handleDelete = () => {}
 const handleFileUploaded = (data: any) => {
   emits('change', data.resp.url)
@@ -67,7 +87,13 @@ watch(
       cropper = new Cropper(cropperImg.value, {
         aspectRatio: 16 / 9,
         crop(event: any) {
-          console.log(event)
+          const { x, y, width, height } = event.detail
+          cropData = {
+            x: Math.floor(x),
+            y: Math.floor(y),
+            width: Math.floor(width),
+            height: Math.floor(height)
+          }
         }
       })
     } else {

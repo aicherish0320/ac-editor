@@ -52,8 +52,8 @@ export const testComponents: ComponentData[] = [
     id: uuidV4(),
     name: markRaw(AcImage),
     props: {
-      src: 'http://localhost:3300/uploads/backet.png',
-      width: '100px'
+      src: 'https://aic-lego.oss-cn-hangzhou.aliyuncs.com/editor-uploads/kj.jpeg',
+      width: '300px'
     }
   }
 ]
