@@ -11,6 +11,7 @@
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
     "ant-design-vue": "^3.2.10",
+    "cropperjs": "^1.5.12",
     "lodash-es": "^4.17.21",
     "normalize.css": "^8.0.1",
     "uuid": "^8.3.2",

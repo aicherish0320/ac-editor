@@ -1,6 +1,6 @@
 <template>
   <div class="image-processor">
-    <!-- <AModal
+    <AModal
       title="裁剪图片"
       v-model:visible="showModal"
       @ok="handleOk"
@@ -9,9 +9,9 @@
       cancelText="取消"
     >
       <div class="image-cropper">
-        <img :src="baseImageUrl" id="processed-image" ref="cropperImg" />
+        <img :src="value" id="processed-image" ref="cropperImg" />
       </div>
-    </AModal> -->
+    </AModal>
     <div
       class="image-preview"
       :style="{ backgroundImage: backgroundUrl }"
@@ -34,7 +34,8 @@
 import { Modal } from 'ant-design-vue'
 import StyleUploader from './StyleUploader.vue'
 import { ScissorOutlined, DeleteOutlined } from '@ant-design/icons-vue'
-import { ref, computed } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
+import Cropper from 'cropperjs'
 
 const props = withDefaults(
   defineProps<{
@@ -48,6 +49,8 @@ const props = withDefaults(
 const emits = defineEmits(['change'])
 
 const showModal = ref(false)
+let cropper: Cropper
+const cropperImg = ref<null | HTMLImageElement>(null)
 const backgroundUrl = computed(() => `url(${props.value})`)
 
 const handleOk = () => {}
@@ -56,6 +59,25 @@ const handleDelete = () => {}
 const handleFileUploaded = (data: any) => {
   emits('change', data.resp.url)
 }
+
+watch(
+  showModal,
+  async (newVal) => {
+    if (cropperImg.value) {
+      cropper = new Cropper(cropperImg.value, {
+        aspectRatio: 16 / 9,
+        crop(event: any) {
+          console.log(event)
+        }
+      })
+    } else {
+      if (cropper) {
+        cropper.destroy()
+      }
+    }
+  },
+  { flush: 'post' }
+)
 </script>
 
 <style scoped>
