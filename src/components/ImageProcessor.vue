@@ -65,10 +65,26 @@ const baseImageUrl = computed(() => props.value.split('?')[0])
 const handleOk = () => {
   if (cropData) {
     const { x, y, width, height } = cropData
+    //! 阿里OSS上传
     const cropperURL =
       baseImageUrl.value +
       `?x-oss-process=image/crop,x_${x},y_${y},w_${width},h_${height}`
     emits('change', cropperURL)
+    //! 手动上传
+    // cropper.getCroppedCanvas().toBlob((blob) => {
+    //   const formData = new FormData()
+    //   formData.append('file', blob as Blob, 'cropper.jpg')
+    //   fetch('http://localhost:3300/upload', {
+    //     method: 'post',
+    //     body: formData
+    //   })
+    //     .then((response) => response.json())
+    //     .then((resp) => {
+    //       console.log('resp >>> ', resp)
+    //       emits('change', resp.data.url)
+    //     })
+    // })
+
     showModal.value = false
   }
 }
