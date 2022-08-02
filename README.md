@@ -87,3 +87,16 @@ declare module '*.vue' {
 - `App Instance` 应用实例 createApp
 - `Component Instance` 组件实例 ref 或者 app.mount 返回
 - `Component Internal Instance` 组件内部实例 getInternalInstance
+
+## 列表排序
+
+- 拖动开始(dragstart)
+  - 被拖动图层的变化
+  - 会出现一个浮层
+- 拖动进行中(dragmove)
+  - 浮层会随着鼠标移动
+  - 条目发生“换位”
+- 松开鼠标阶段(drop)
+  - 浮层消失
+  - 被拖动图层状态复原
+  - 数据被更新

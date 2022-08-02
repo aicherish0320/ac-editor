@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import useKeyPress from '@/hooks/useKeyPress'
 import useClickOutside from '@/hooks/useClickOutside'
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 
 const props = defineProps<{
   value?: string
