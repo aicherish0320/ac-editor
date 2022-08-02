@@ -36,20 +36,39 @@
       </a-layout-content>
     </a-layout>
     <a-layout-sider width="300" class="sider sider-right">
-      <pre>{{ currentElement?.props }}</pre>
-      组件属性
-      <template v-if="currentElement">
-        <PropsTable
-          :props="currentElement.props"
-          @change="handleChange"
-        ></PropsTable>
-      </template>
+      <a-tabs type="card" v-model:activeKey="activePanel">
+        <a-tab-pane key="component" tab="属性设置" class="no-top-radius">
+          <template v-if="currentElement">
+            <PropsTable
+              v-if="!currentElement?.isLocked"
+              :props="currentElement.props"
+              @change="handleChange"
+            ></PropsTable>
+            <div v-else>
+              <a-empty>
+                <template #description>
+                  <p>该元素被锁定，无法编辑</p>
+                </template>
+              </a-empty>
+            </div>
+          </template>
+        </a-tab-pane>
+        <a-tab-pane key="layer" tab="图层设置">
+          <LayerList
+            :list="components"
+            :selected-id="currentElement?.id"
+            @change="handleChange"
+            @select="setActive"
+          ></LayerList>
+        </a-tab-pane>
+        <a-tab-pane key="page" tab="页面设置"></a-tab-pane>
+      </a-tabs>
     </a-layout-sider>
   </a-layout>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store'
 import ComponentsList from './ComponentsList.vue'
@@ -57,9 +76,12 @@ import { defaultTextTemplates } from '@/common/defaultTemplates'
 import { ComponentData } from '@/store/modules/editor'
 import EditWrapper from './EditWrapper.vue'
 import PropsTable from './PropsTable.vue'
+import LayerList from './LayerList.vue'
+export type TabType = 'component' | 'layer' | 'page'
 
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
+const activePanel = ref<TabType>('component')
 const currentElement = computed<ComponentData | null>(
   () => store.getters.getCurrentElement
 )

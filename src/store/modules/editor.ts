@@ -15,6 +15,12 @@ export interface ComponentData {
   props: Partial<TextComponentProps & ImageComponentProps>
   id: string
   name: any
+  // 图层是否隐藏
+  isHidden?: boolean
+  // 图层是否锁定
+  isLocked?: boolean
+  // 图层名称
+  layerName?: string
 }
 
 export interface EditorProps {
@@ -28,6 +34,7 @@ export const testComponents: ComponentData[] = [
   {
     id: uuidV4(),
     name: markRaw(AcText),
+    layerName: '图层一',
     props: {
       ...textDefaultProps,
       text: 'hello',
@@ -41,6 +48,7 @@ export const testComponents: ComponentData[] = [
   {
     id: uuidV4(),
     name: markRaw(AcText),
+    layerName: '图层二',
     props: {
       ...textDefaultProps,
       text: 'hello2',
@@ -51,6 +59,7 @@ export const testComponents: ComponentData[] = [
   {
     id: uuidV4(),
     name: markRaw(AcImage),
+    layerName: '图层三',
     props: {
       src: 'https://aic-lego.oss-cn-hangzhou.aliyuncs.com/editor-uploads/kj.jpeg',
       width: '300px'
@@ -77,12 +86,16 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     setActive(state, currentId: string) {
       state.currentElement = currentId
     },
-    updateComponent(state, { key, value }) {
+    updateComponent(state, { id, key, value, isRoot }) {
       const updatedComponent = state.components.find(
-        (component) => component.id === state.currentElement
+        (component) => component.id === (id || state.currentElement)
       )
       if (updatedComponent) {
-        updatedComponent.props[key as keyof TextComponentProps] = value
+        if (isRoot) {
+          updatedComponent[key as keyof ComponentData] = value
+        } else {
+          updatedComponent.props[key as keyof TextComponentProps] = value
+        }
       }
     }
   }
