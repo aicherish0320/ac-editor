@@ -2,6 +2,14 @@ import { markRaw, VNode, h } from 'vue'
 import { AllComponentProps } from './defaultProps'
 import ColorPicker from '@/components/ColorPicker.vue'
 import ImageProcessor from '@/components/ImageProcessor.vue'
+import ShadowPicker from '@/components/ShadowPicker.vue'
+import IconSwitch from '@/components/IconSwitch.vue'
+
+import {
+  BoldOutlined,
+  ItalicOutlined,
+  UnderlineOutlined
+} from '@ant-design/icons-vue'
 import {
   Textarea,
   InputNumber,
@@ -22,6 +30,7 @@ export interface PropToForm {
   component: any
   subComponent?: any
   extraProps?: { [key: string]: any }
+  extraClass?: string[]
   text?: string
   options?: { text: string | VNode; value: any }[]
   initialTransform?: (v: any) => any
@@ -99,6 +108,27 @@ export const mapPropsToForms: PropsToForms = {
     subComponent: markRaw(SelectOption),
     text: '字体',
     options: [{ text: '无', value: '' }, ...fontFamilyOptions]
+  },
+  fontWeight: {
+    component: markRaw(IconSwitch),
+    initialTransform: (v: string) => v === 'bold',
+    afterTransform: (e: boolean) => (e ? 'bold' : 'normal'),
+    valueProp: 'checked',
+    extraProps: { iconName: markRaw(BoldOutlined), tip: '加粗' }
+  },
+  fontStyle: {
+    component: markRaw(IconSwitch),
+    initialTransform: (v: string) => v === 'italic',
+    afterTransform: (e: boolean) => (e ? 'italic' : 'normal'),
+    valueProp: 'checked',
+    extraProps: { iconName: markRaw(ItalicOutlined), tip: '斜体' }
+  },
+  textDecoration: {
+    component: markRaw(IconSwitch),
+    initialTransform: (v: string) => v === 'underline',
+    afterTransform: (e: boolean) => (e ? 'underline' : 'none'),
+    valueProp: 'checked',
+    extraProps: { iconName: markRaw(UnderlineOutlined), tip: '下划线' }
   },
   width: {
     text: '宽度',
@@ -211,5 +241,9 @@ export const mapPropsToForms: PropsToForms = {
   },
   src: {
     component: markRaw(ImageProcessor)
+  },
+  boxShadow: {
+    component: markRaw(ShadowPicker),
+    extraClass: ['w100']
   }
 }

@@ -5,6 +5,7 @@ import { GlobalDataProps } from '..'
 import AcText from '@/components/AcText.vue'
 import AcImage from '@/components/AcImage.vue'
 import {
+  AllComponentProps,
   ImageComponentProps,
   imageDefaultProps,
   TextComponentProps,
@@ -12,7 +13,7 @@ import {
 } from '@/common/defaultProps'
 
 export interface ComponentData {
-  props: Partial<TextComponentProps & ImageComponentProps>
+  props: Partial<AllComponentProps>
   id: string
   name: any
   // 图层是否隐藏
@@ -61,6 +62,7 @@ export const testComponents: ComponentData[] = [
     name: markRaw(AcImage),
     layerName: '图层三',
     props: {
+      ...imageDefaultProps,
       src: 'https://aic-lego.oss-cn-hangzhou.aliyuncs.com/editor-uploads/kj.jpeg',
       width: '300px'
     }

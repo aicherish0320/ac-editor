@@ -39,11 +39,16 @@
       <a-tabs type="card" v-model:activeKey="activePanel">
         <a-tab-pane key="component" tab="属性设置" class="no-top-radius">
           <template v-if="currentElement">
-            <PropsTable
+            <EditGroups
               v-if="!currentElement?.isLocked"
               :props="currentElement.props"
               @change="handleChange"
-            ></PropsTable>
+            ></EditGroups>
+            <!-- <PropsTable
+              v-if="!currentElement?.isLocked"
+              :props="currentElement.props"
+              @change="handleChange"
+            ></PropsTable> -->
             <div v-else>
               <a-empty>
                 <template #description>
@@ -75,7 +80,7 @@ import ComponentsList from './ComponentsList.vue'
 import { defaultTextTemplates } from '@/common/defaultTemplates'
 import { ComponentData } from '@/store/modules/editor'
 import EditWrapper from './EditWrapper.vue'
-import PropsTable from './PropsTable.vue'
+import EditGroups from './EditGroups.vue'
 import LayerList from './LayerList.vue'
 export type TabType = 'component' | 'layer' | 'page'
 

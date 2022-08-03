@@ -1,8 +1,14 @@
 <template>
   <div class="props-table">
-    <div v-for="(item, key) in finalProps" :key="key" class="prop-item">
-      <span class="label">{{ item?.text }}</span>
-      <div class="prop-component">
+    <div
+      v-for="(item, key) in finalProps"
+      :key="key"
+      :class="{ 'no-text': !item.text }"
+      class="prop-item"
+      :id="`item-${key}`"
+    >
+      <span v-if="item.text" class="label">{{ item?.text }}</span>
+      <div :class="`prop-component ${item.extraClass?.join(' ')}`">
         <component
           :is="item?.component"
           :[item?.valueProp]="item?.value"
@@ -37,6 +43,7 @@ interface FormProps {
   subComponent?: any
   value: string
   extraProps?: { [key: string]: any }
+  extraClass?: string[]
   text?: string
   options?: { text: string | VNode; value: any }[]
   valueProp: string
@@ -88,15 +95,29 @@ const finalProps = computed(() => {
 })
 </script>
 
-<style scoped lang="scss">
+<style>
 .prop-item {
   display: flex;
   margin-bottom: 10px;
-  .label {
-    width: 30%;
-  }
-  .prop-component {
-    width: 70%;
-  }
+  align-items: center;
+}
+.label {
+  width: 28%;
+}
+.prop-component {
+  width: 70%;
+}
+.prop-item.no-text {
+  display: inline-block;
+  margin: 0 10px 0 0;
+}
+#item-fontWeight {
+  margin-left: 28%;
+}
+.component-a-select .ant-select {
+  width: 150px;
+}
+.prop-component.w100 {
+  width: 100%;
 }
 </style>
