@@ -72,35 +72,39 @@ export const testComponents: ComponentData[] = [
     layerName: '图层一',
     props: {
       ...textDefaultProps,
+      width: '200px',
+      height: '100px',
       text: 'hello',
       fontSize: '20px',
-      top: '10px',
+      top: '30px',
+      left: '30px',
       lineHeight: '1',
       textAlign: 'center',
-      fontFamily: '黑体'
-    }
-  },
-  {
-    id: uuidV4(),
-    name: markRaw(AcText),
-    layerName: '图层二',
-    props: {
-      ...textDefaultProps,
-      text: 'hello2',
-      fontSize: '30px',
-      top: '40px'
-    }
-  },
-  {
-    id: uuidV4(),
-    name: markRaw(AcImage),
-    layerName: '图层三',
-    props: {
-      ...imageDefaultProps,
-      src: 'https://aic-lego.oss-cn-hangzhou.aliyuncs.com/editor-uploads/kj.jpeg',
-      width: '300px'
+      fontFamily: '黑体',
+      backgroundColor: '#0f0'
     }
   }
+  // {
+  //   id: uuidV4(),
+  //   name: markRaw(AcText),
+  //   layerName: '图层二',
+  //   props: {
+  //     ...textDefaultProps,
+  //     text: 'hello2',
+  //     fontSize: '30px',
+  //     top: '40px'
+  //   }
+  // },
+  // {
+  //   id: uuidV4(),
+  //   name: markRaw(AcImage),
+  //   layerName: '图层三',
+  //   props: {
+  //     ...imageDefaultProps,
+  //     src: 'https://aic-lego.oss-cn-hangzhou.aliyuncs.com/editor-uploads/kj.jpeg',
+  //     width: '300px'
+  //   }
+  // }
 ]
 
 const pageDefaultProps = {

@@ -22,7 +22,7 @@ const props = withDefaults(
   defineProps<{
     props: AllComponentProps
     // eslint-disable-next-line no-use-before-define
-    groups: GroupProps[]
+    groups?: GroupProps[]
   }>(),
   {
     groups: () => defaultEditGroups

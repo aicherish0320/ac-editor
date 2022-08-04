@@ -49,7 +49,7 @@ const onChange = (value: string) => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .lego-color-picker {
   display: flex;
 }
@@ -89,6 +89,6 @@ const onChange = (value: string) => {
   border: 1px solid #ccc;
 }
 .transparent-back {
-  background: url('~@/assets/transparent.png') no-repeat;
+  background: url('@/assets/transparent.png') no-repeat;
 }
 </style>

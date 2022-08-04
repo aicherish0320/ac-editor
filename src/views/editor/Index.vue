@@ -26,6 +26,7 @@
               :key="component.id"
               :id="component.id"
               :active="component.id === (currentElement && currentElement.id)"
+              :props="component.props"
               @set-active="setActive"
             >
               <component
