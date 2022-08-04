@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { TextComponentProps } from '@/common/defaultProps'
+import { AllComponentProps, TextComponentProps } from '@/common/defaultProps'
 import { mapPropsToForms } from '@/common/propsMap'
 import { reduce } from 'lodash-es'
 import { computed, VNode } from 'vue'
@@ -52,7 +52,7 @@ interface FormProps {
 }
 
 const props = defineProps<{
-  props: TextComponentProps
+  props: AllComponentProps
 }>()
 
 const emits = defineEmits(['change'])

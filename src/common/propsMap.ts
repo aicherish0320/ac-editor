@@ -4,6 +4,7 @@ import ColorPicker from '@/components/ColorPicker.vue'
 import ImageProcessor from '@/components/ImageProcessor.vue'
 import ShadowPicker from '@/components/ShadowPicker.vue'
 import IconSwitch from '@/components/IconSwitch.vue'
+import BackgroundProcessor from '@/components/BackgroundProcessor.vue'
 
 import {
   BoldOutlined,
@@ -25,6 +26,7 @@ import 'ant-design-vue/es/input-number/style/index.css'
 import 'ant-design-vue/es/slider/style/index.css'
 import 'ant-design-vue/es/radio/style/index.css'
 import 'ant-design-vue/es/select/style/index.css'
+import { AllFormProps } from '@/store/modules/editor'
 
 export interface PropToForm {
   component: any
@@ -40,7 +42,7 @@ export interface PropToForm {
 }
 
 export type PropsToForms = {
-  [P in keyof AllComponentProps]?: PropToForm
+  [P in keyof AllFormProps]?: PropToForm
 }
 
 const fontFamilyArr = [
@@ -245,5 +247,23 @@ export const mapPropsToForms: PropsToForms = {
   boxShadow: {
     component: markRaw(ShadowPicker),
     extraClass: ['w100']
+  },
+  backgroundImage: {
+    ...defaultHandler,
+    component: markRaw(BackgroundProcessor),
+    initialTransform: (v: string) => {
+      if (v) {
+        const reg = /\(["'](.+)["']\)/g
+        const matches = reg.exec(v)
+        if (matches && matches.length > 1) {
+          return matches[1]
+        } else {
+          return ''
+        }
+      } else {
+        return ''
+      }
+    },
+    afterTransform: (e: string) => (e ? `url('${e}')` : '')
   }
 }

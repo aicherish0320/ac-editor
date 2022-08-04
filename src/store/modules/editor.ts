@@ -24,12 +24,46 @@ export interface ComponentData {
   layerName?: string
 }
 
+export interface PageProps {
+  backgroundColor: string
+  backgroundImage: string
+  backgroundRepeat: string
+  backgroundSize: string
+  height: string
+}
+
+export interface PageData {
+  id?: number
+  props?: PageProps
+  title?: string
+  desc?: string
+  coverImg?: string
+  uuid?: string
+  setting?: { [key: string]: any }
+  isTemplate?: boolean
+  isHot?: boolean
+  isNew?: boolean
+  author?: string
+  copiedCount?: number
+  status?: number
+  user?: {
+    gender: string
+    nickName: string
+    picture: string
+    userName: string
+  }
+}
+
 export interface EditorProps {
   // 供中间编辑器渲染的数组
   components: ComponentData[]
   // 当前编辑的是哪个元素，uuid
   currentElement: string
+  //
+  page: PageData
 }
+
+export type AllFormProps = PageProps & AllComponentProps
 
 export const testComponents: ComponentData[] = [
   {
@@ -69,10 +103,22 @@ export const testComponents: ComponentData[] = [
   }
 ]
 
+const pageDefaultProps = {
+  backgroundColor: '#ffffff',
+  backgroundImage: '',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
+  height: '660px'
+}
+
 const editor: Module<EditorProps, GlobalDataProps> = {
   state: {
     components: testComponents,
-    currentElement: ''
+    currentElement: '',
+    page: {
+      props: pageDefaultProps,
+      title: 'test title'
+    }
   },
   getters: {
     getCurrentElement(state) {
@@ -98,6 +144,11 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         } else {
           updatedComponent.props[key as keyof TextComponentProps] = value
         }
+      }
+    },
+    updatePage(state, { key, value }) {
+      if (state.page.props) {
+        state.page.props[key as keyof PageProps] = value
       }
     }
   }

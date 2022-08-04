@@ -20,18 +20,20 @@
       <a-layout-content class="preview-container">
         <section>画布区域</section>
         <section class="preview-list">
-          <EditWrapper
-            v-for="component in components"
-            :key="component.id"
-            :id="component.id"
-            :active="component.id === (currentElement && currentElement.id)"
-            @set-active="setActive"
-          >
-            <component
-              :is="component.name"
-              v-bind="component.props"
-            ></component>
-          </EditWrapper>
+          <div class="body-container" :style="page.props">
+            <EditWrapper
+              v-for="component in components"
+              :key="component.id"
+              :id="component.id"
+              :active="component.id === (currentElement && currentElement.id)"
+              @set-active="setActive"
+            >
+              <component
+                :is="component.name"
+                v-bind="component.props"
+              ></component>
+            </EditWrapper>
+          </div>
         </section>
       </a-layout-content>
     </a-layout>
@@ -44,11 +46,6 @@
               :props="currentElement.props"
               @change="handleChange"
             ></EditGroups>
-            <!-- <PropsTable
-              v-if="!currentElement?.isLocked"
-              :props="currentElement.props"
-              @change="handleChange"
-            ></PropsTable> -->
             <div v-else>
               <a-empty>
                 <template #description>
@@ -66,7 +63,9 @@
             @select="setActive"
           ></LayerList>
         </a-tab-pane>
-        <a-tab-pane key="page" tab="页面设置"></a-tab-pane>
+        <a-tab-pane key="page" tab="页面设置">
+          <PropsTable :props="page.props" @change="pageChange"></PropsTable>
+        </a-tab-pane>
       </a-tabs>
     </a-layout-sider>
   </a-layout>
@@ -82,14 +81,21 @@ import { ComponentData } from '@/store/modules/editor'
 import EditWrapper from './EditWrapper.vue'
 import EditGroups from './EditGroups.vue'
 import LayerList from './LayerList.vue'
+import PropsTable from './PropsTable.vue'
 export type TabType = 'component' | 'layer' | 'page'
 
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
+const page = computed(() => store.state.editor.page)
 const activePanel = ref<TabType>('component')
 const currentElement = computed<ComponentData | null>(
   () => store.getters.getCurrentElement
 )
+
+const pageChange = (e) => {
+  console.log('pageChange >>> ', e)
+  store.commit('updatePage', e)
+}
 
 const addItem = (component: any) => {
   store.commit('addComponent', component)
