@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { Modal } from 'ant-design-vue'
+import { message, Modal } from 'ant-design-vue'
 import StyleUploader from './StyleUploader.vue'
 import { ScissorOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 import { ref, computed, watch, nextTick } from 'vue'
@@ -91,8 +91,12 @@ const handleOk = () => {
 const handleCancel = () => {
   showModal.value = false
 }
-const handleDelete = () => {}
+const handleDelete = () => {
+  emits('change', '')
+}
+
 const handleFileUploaded = (data: any) => {
+  message.success('上传成功')
   emits('change', data.resp.url)
 }
 
