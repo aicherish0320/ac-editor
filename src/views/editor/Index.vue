@@ -19,7 +19,7 @@
     <a-layout>
       <a-layout-content class="preview-container">
         <section>画布区域</section>
-        <section class="preview-list">
+        <section class="preview-list" id="canvas-area">
           <div class="body-container" :style="page.props">
             <EditWrapper
               v-for="component in components"
@@ -28,6 +28,7 @@
               :active="component.id === (currentElement && currentElement.id)"
               :props="component.props"
               @set-active="setActive"
+              @update-position="updatePosition"
             >
               <component
                 :is="component.name"
@@ -103,6 +104,12 @@ const addItem = (component: any) => {
 }
 const setActive = (id: string) => {
   store.commit('setActive', id)
+}
+
+const updatePosition = (data: { left: number; top: number; id: string }) => {
+  const { left, top, id } = data
+  store.commit('updateComponent', { key: 'left', value: left + 'px', id })
+  store.commit('updateComponent', { key: 'top', value: top + 'px', id })
 }
 
 const handleChange = (e: any) => {

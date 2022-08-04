@@ -12,14 +12,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { pick } from 'lodash-es'
 const props = defineProps<{
   id: string
   active: boolean
   props: Object
 }>()
-const emits = defineEmits(['set-active'])
+const emits = defineEmits(['set-active', 'update-position'])
+const editorWrapperRef = ref<null | HTMLElement>(null)
 
 const onItemClick = (id: string) => {
   emits('set-active', id)
@@ -33,7 +34,16 @@ const gap = {
   x: 0,
   y: 0
 }
-const editorWrapperRef = ref<null | HTMLElement>(null)
+let isMoving = false
+const calculateMovePosition = (e: MouseEvent) => {
+  const container = document.getElementById('canvas-area') as HTMLElement
+  const left = e.clientX - gap.x - container.offsetLeft
+  const top = e.clientY - gap.y - container.offsetTop
+  return {
+    left,
+    top
+  }
+}
 const startMove = (e: MouseEvent) => {
   const currentElement = editorWrapperRef.value
   if (currentElement) {
@@ -41,17 +51,35 @@ const startMove = (e: MouseEvent) => {
     gap.x = e.clientX - left
     gap.y = e.clientY - top
   }
-  console.log('gap >>> ', gap)
+  const handleMove = (e: MouseEvent) => {
+    isMoving = true
+    const { left, top } = calculateMovePosition(e)
+    if (currentElement) {
+      currentElement.style.top = top + 'px'
+      currentElement.style.left = left + 'px'
+    }
+  }
+  const handleMouseUp = (e: MouseEvent) => {
+    document.removeEventListener('mousemove', handleMove)
+    if (isMoving) {
+      const { left, top } = calculateMovePosition(e)
+      emits('update-position', { left, top, id: props.id })
+      isMoving = false
+    }
+
+    nextTick(() => {
+      document.removeEventListener('mouseup', handleMouseUp)
+    })
+  }
+  document.addEventListener('mousemove', handleMove)
+  document.addEventListener('mouseup', handleMouseUp)
 }
 </script>
 
 <style lang="scss">
 .edit-wrapper {
-  // position: absolute;
   & > * {
     position: static !important;
-    // width: 100% !important;
-    // height: 100% !important;
   }
   &:hover {
     border: 1px dashed #ccc;
