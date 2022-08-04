@@ -11,3 +11,18 @@ export const getImageDimensions = (url: string | File) => {
     })
   })
 }
+
+export const getParentElement = (
+  element: HTMLElement | null,
+  className: string
+) => {
+  while (element) {
+    if (element.classList.contains(className)) {
+      return element
+    } else {
+      element = element.parentNode as HTMLElement
+    }
+  }
+
+  return null
+}
