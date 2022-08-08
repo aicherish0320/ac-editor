@@ -84,6 +84,7 @@ import EditWrapper from './EditWrapper.vue'
 import EditGroups from './EditGroups.vue'
 import LayerList from './LayerList.vue'
 import PropsTable from './PropsTable.vue'
+import { forEach, pickBy } from 'lodash-es'
 export type TabType = 'component' | 'layer' | 'page'
 
 const store = useStore<GlobalDataProps>()
@@ -107,9 +108,12 @@ const setActive = (id: string) => {
 }
 
 const updatePosition = (data: { left: number; top: number; id: string }) => {
-  const { left, top, id } = data
-  store.commit('updateComponent', { key: 'left', value: left + 'px', id })
-  store.commit('updateComponent', { key: 'top', value: top + 'px', id })
+  const { id } = data
+
+  const updatedData = pickBy(data, (v, k) => k !== 'od')
+  forEach(updatedData, (v, k) => {
+    store.commit('updateComponent', { key: k, value: v + 'px', id })
+  })
 }
 
 const handleChange = (e: any) => {
