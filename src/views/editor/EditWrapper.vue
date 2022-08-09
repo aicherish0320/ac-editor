@@ -175,56 +175,62 @@ const startMove = (e: MouseEvent) => {
 }
 </script>
 
-<style lang="scss">
+<style>
 .edit-wrapper {
-  box-sizing: content-box;
-  & > * {
-    position: static !important;
-    width: 100% !important;
-    height: 100% !important;
-  }
-  &:hover {
-    border: 1px dashed #ccc;
-  }
-  &.active {
-    border: 1px solid #1890ff;
-    user-select: none;
-    z-index: 1500;
-
-    .resizes {
-      display: block;
-      .resize {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #fff;
-        border: 3px solid #1890ff;
-        position: absolute;
-      }
-    }
-  }
-  .resizes {
-    display: none;
-  }
-  .resizes .resize.top-left {
-    left: -5px;
-    top: -5px;
-    cursor: nwse-resize;
-  }
-  .resizes .resize.top-right {
-    right: -5px;
-    top: -5px;
-    cursor: nesw-resize;
-  }
-  .resizes .resize.bottom-left {
-    left: -5px;
-    bottom: -5px;
-    cursor: nesw-resize;
-  }
-  .resizes .resize.bottom-right {
-    right: -5px;
-    bottom: -5px;
-    cursor: nwse-resize;
-  }
+  padding: 0px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  user-select: none;
+  box-sizing: content-box !important;
+}
+.edit-wrapper > * {
+  position: static !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+.edit-wrapper:hover {
+  border: 1px dashed #ccc;
+}
+.edit-wrapper.hidden {
+  display: none;
+}
+.edit-wrapper.active {
+  border: 1px solid #1890ff;
+  user-select: none;
+  z-index: 1500;
+}
+.edit-wrapper .resizes {
+  display: none;
+}
+.edit-wrapper.active .resizes {
+  display: block;
+}
+.edit-wrapper.active .resizes .resize {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #1890ff;
+  position: absolute;
+}
+.edit-wrapper .resizes .resize.top-left {
+  left: -5px;
+  top: -5px;
+  cursor: nwse-resize;
+}
+.edit-wrapper .resizes .resize.top-right {
+  right: -5px;
+  top: -5px;
+  cursor: nesw-resize;
+}
+.edit-wrapper .resizes .resize.bottom-left {
+  left: -5px;
+  bottom: -5px;
+  cursor: nesw-resize;
+}
+.edit-wrapper .resizes .resize.bottom-right {
+  right: -5px;
+  bottom: -5px;
+  cursor: nwse-resize;
 }
 </style>

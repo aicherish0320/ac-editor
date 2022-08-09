@@ -1,7 +1,7 @@
 import { Component, markRaw } from 'vue'
 import { Module } from 'vuex'
 import { v4 as uuidV4 } from 'uuid'
-import { GlobalDataProps } from '..'
+import store, { GlobalDataProps } from '..'
 import AcText from '@/components/AcText.vue'
 import AcImage from '@/components/AcImage.vue'
 import {
@@ -13,6 +13,8 @@ import {
 } from '@/common/defaultProps'
 import { message } from 'ant-design-vue'
 import { cloneDeep } from 'lodash-es'
+
+export type MoveDirection = 'Up' | 'Down' | 'Left' | 'Right'
 
 export interface ComponentData {
   props: Partial<AllComponentProps>
@@ -132,10 +134,16 @@ const editor: Module<EditorProps, GlobalDataProps> = {
       return state.components.find(
         (component) => component.id === state.currentElement
       )
+    },
+    getElement: (state) => (id: string) => {
+      return state.components.find(
+        (component) => component.id === id || state.currentElement
+      )
     }
   },
   mutations: {
     addComponent(state, component: ComponentData) {
+      component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)
     },
     setActive(state, currentId: string) {
@@ -156,7 +164,6 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         clone.id = uuidV4()
         clone.layerName = clone.layerName + '副本'
         clone.name = markRaw(clone.name)
-        console.log('clone >>> ', clone)
         state.components.push(clone)
         message.success('已黏贴当前图层')
       }
@@ -170,6 +177,59 @@ const editor: Module<EditorProps, GlobalDataProps> = {
           (component) => component.id !== id
         )
         message.success('删除当前图层成功')
+      }
+    },
+    moveComponent(
+      state,
+      data: { direction: MoveDirection; amount: number; id: string }
+    ) {
+      const currentComponent = state.components.find(
+        (component) => component.id === data.id
+      )
+      if (currentComponent) {
+        const oldTop = parseInt(currentComponent.props.top || '0')
+        const oldLeft = parseInt(currentComponent.props.left || '0')
+        const { direction, amount } = data
+        switch (direction) {
+          case 'Up': {
+            const newValue = oldTop - amount + 'px'
+            store.commit('updateComponent', {
+              key: 'top',
+              value: newValue,
+              id: data.id
+            })
+            break
+          }
+          case 'Down': {
+            const newValue = oldTop + amount + 'px'
+            store.commit('updateComponent', {
+              key: 'top',
+              value: newValue,
+              id: data.id
+            })
+            break
+          }
+          case 'Left': {
+            const newValue = oldLeft - amount + 'px'
+            store.commit('updateComponent', {
+              key: 'left',
+              value: newValue,
+              id: data.id
+            })
+            break
+          }
+          case 'Right': {
+            const newValue = oldLeft + amount + 'px'
+            store.commit('updateComponent', {
+              key: 'left',
+              value: newValue,
+              id: data.id
+            })
+            break
+          }
+          default:
+            break
+        }
       }
     },
     updateComponent(state, { id, key, value, isRoot }) {
