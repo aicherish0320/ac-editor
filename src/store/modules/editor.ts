@@ -16,6 +16,14 @@ import { cloneDeep } from 'lodash-es'
 
 export type MoveDirection = 'Up' | 'Down' | 'Left' | 'Right'
 
+export interface HistoryProps {
+  id: string
+  componentId: string
+  type: 'add' | 'delete' | 'modify'
+  data: any
+  index?: number
+}
+
 export interface ComponentData {
   props: Partial<AllComponentProps>
   id: string
@@ -63,9 +71,10 @@ export interface EditorProps {
   components: ComponentData[]
   // 当前编辑的是哪个元素，uuid
   currentElement: string
-  //
   page: PageData
   copiedComponent?: ComponentData
+  histories: HistoryProps[]
+  historyIndex: number
 }
 
 export type AllFormProps = PageProps & AllComponentProps
@@ -127,7 +136,9 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     page: {
       props: pageDefaultProps,
       title: 'test title'
-    }
+    },
+    histories: [],
+    historyIndex: -1
   },
   getters: {
     getCurrentElement(state) {
@@ -145,6 +156,13 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     addComponent(state, component: ComponentData) {
       component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)
+      // 添加历史记录
+      state.histories.push({
+        id: uuidV4(),
+        componentId: component.id,
+        type: 'add',
+        data: cloneDeep(component)
+      })
     },
     setActive(state, currentId: string) {
       state.currentElement = currentId
@@ -166,6 +184,13 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         clone.name = markRaw(clone.name)
         state.components.push(clone)
         message.success('已黏贴当前图层')
+        // 添加历史记录
+        state.histories.push({
+          id: uuidV4(),
+          componentId: clone.id,
+          type: 'add',
+          data: cloneDeep(clone)
+        })
       }
     },
     deleteComponent(state, id) {
@@ -173,10 +198,22 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         (component) => component.id === id
       )
       if (currentComponent) {
+        const currentIndex = state.components.findIndex(
+          (component) => component.id === id
+        )
         state.components = state.components.filter(
           (component) => component.id !== id
         )
         message.success('删除当前图层成功')
+        // 添加历史记录
+        console.log('currentIndex >>> ', currentIndex)
+        state.histories.push({
+          id: uuidV4(),
+          componentId: currentComponent.id,
+          type: 'delete',
+          data: currentComponent,
+          index: currentIndex
+        })
       }
     },
     moveComponent(
@@ -240,7 +277,19 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         if (isRoot) {
           updatedComponent[key as keyof ComponentData] = value
         } else {
+          const oldValue =
+            updatedComponent.props[key as keyof TextComponentProps]
           updatedComponent.props[key as keyof TextComponentProps] = value
+          state.histories.push({
+            id: uuidV4(),
+            componentId: id || state.currentElement,
+            type: 'modify',
+            data: {
+              oldValue,
+              newValue: value,
+              key
+            }
+          })
         }
       }
     },
