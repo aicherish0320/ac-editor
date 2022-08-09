@@ -12,7 +12,8 @@ import {
   textDefaultProps
 } from '@/common/defaultProps'
 import { message } from 'ant-design-vue'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep, update } from 'lodash-es'
+import { insertAt } from '@/helpers'
 
 export type MoveDirection = 'Up' | 'Down' | 'Left' | 'Right'
 
@@ -166,6 +167,41 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     },
     setActive(state, currentId: string) {
       state.currentElement = currentId
+    },
+    undo(state) {
+      if (state.historyIndex === -1) {
+        state.historyIndex = state.histories.length - 1
+      } else {
+        state.historyIndex--
+      }
+      const history = state.histories[state.historyIndex]
+      switch (history.type) {
+        case 'add':
+          state.components = state.components.filter(
+            (component) => component.id !== history.componentId
+          )
+          break
+        case 'delete':
+          state.components = insertAt(
+            state.components,
+            history.index!,
+            history.data
+          )
+          break
+        case 'modify': {
+          const { componentId, data } = history
+          const { key, oldValue } = data
+          const updatedComponent = state.components.find(
+            (component) => component.id === componentId
+          )
+          if (updatedComponent) {
+            updatedComponent.props[key as keyof AllComponentProps] = oldValue
+          }
+          break
+        }
+        default:
+          break
+      }
     },
     copyComponent(state, id) {
       const currentComponent = state.components.find(
