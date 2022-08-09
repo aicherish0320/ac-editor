@@ -1,4 +1,4 @@
-import { markRaw } from 'vue'
+import { Component, markRaw } from 'vue'
 import { Module } from 'vuex'
 import { v4 as uuidV4 } from 'uuid'
 import { GlobalDataProps } from '..'
@@ -11,6 +11,8 @@ import {
   TextComponentProps,
   textDefaultProps
 } from '@/common/defaultProps'
+import { message } from 'ant-design-vue'
+import { cloneDeep } from 'lodash-es'
 
 export interface ComponentData {
   props: Partial<AllComponentProps>
@@ -61,6 +63,7 @@ export interface EditorProps {
   currentElement: string
   //
   page: PageData
+  copiedComponent?: ComponentData
 }
 
 export type AllFormProps = PageProps & AllComponentProps
@@ -137,6 +140,37 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     },
     setActive(state, currentId: string) {
       state.currentElement = currentId
+    },
+    copyComponent(state, id) {
+      const currentComponent = state.components.find(
+        (component) => component.id === id
+      )
+      if (currentComponent) {
+        state.copiedComponent = currentComponent
+        message.success('已拷贝当前图层')
+      }
+    },
+    pasteCopiedComponent(state) {
+      if (state.copiedComponent) {
+        const clone = cloneDeep(state.copiedComponent)
+        clone.id = uuidV4()
+        clone.layerName = clone.layerName + '副本'
+        clone.name = markRaw(clone.name)
+        console.log('clone >>> ', clone)
+        state.components.push(clone)
+        message.success('已黏贴当前图层')
+      }
+    },
+    deleteComponent(state, id) {
+      const currentComponent = state.components.find(
+        (component) => component.id === id
+      )
+      if (currentComponent) {
+        state.components = state.components.filter(
+          (component) => component.id !== id
+        )
+        message.success('删除当前图层成功')
+      }
     },
     updateComponent(state, { id, key, value, isRoot }) {
       const updatedComponent = state.components.find(
