@@ -85,7 +85,10 @@ import EditGroups from './EditGroups.vue'
 import LayerList from './LayerList.vue'
 import PropsTable from './PropsTable.vue'
 import { forEach, pickBy } from 'lodash-es'
+import initHotKeys from '@/plugins/hotKeys'
 export type TabType = 'component' | 'layer' | 'page'
+
+initHotKeys()
 
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
