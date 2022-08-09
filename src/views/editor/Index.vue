@@ -19,6 +19,7 @@
     <a-layout>
       <a-layout-content class="preview-container">
         <section>画布区域</section>
+        <HistoryArea></HistoryArea>
         <section class="preview-list" id="canvas-area">
           <div class="body-container" :style="page.props">
             <EditWrapper
@@ -86,6 +87,7 @@ import LayerList from './LayerList.vue'
 import PropsTable from './PropsTable.vue'
 import { forEach, pickBy } from 'lodash-es'
 import initHotKeys from '@/plugins/hotKeys'
+import HistoryArea from './HistoryArea.vue'
 export type TabType = 'component' | 'layer' | 'page'
 
 initHotKeys()

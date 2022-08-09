@@ -151,6 +151,22 @@ const editor: Module<EditorProps, GlobalDataProps> = {
       return state.components.find(
         (component) => component.id === id || state.currentElement
       )
+    },
+    checkUndoDisable(state) {
+      if (state.histories.length === 0 || state.historyIndex === 0) {
+        return true
+      }
+      return false
+    },
+    checkRedoDisable(state) {
+      if (
+        state.histories.length === 0 ||
+        state.historyIndex === state.histories.length ||
+        state.historyIndex === -1
+      ) {
+        return true
+      }
+      return false
     }
   },
   mutations: {
@@ -167,6 +183,37 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     },
     setActive(state, currentId: string) {
       state.currentElement = currentId
+    },
+    redo(state) {
+      if (state.historyIndex === -1) {
+        return
+      }
+      const history = state.histories[state.historyIndex]
+      switch (history.type) {
+        case 'add':
+          state.components.push(history.data)
+          break
+        case 'delete':
+          state.components = state.components.filter(
+            (component) => component.id !== history.componentId
+          )
+          break
+        case 'modify': {
+          const { componentId, data } = history
+          const { key, newValue } = data
+          const updatedComponent = state.components.find(
+            (component) => component.id === componentId
+          )
+          if (updatedComponent) {
+            updatedComponent.props[key as keyof AllComponentProps] = newValue
+          }
+          break
+        }
+
+        default:
+          break
+      }
+      state.historyIndex++
     },
     undo(state) {
       if (state.historyIndex === -1) {
