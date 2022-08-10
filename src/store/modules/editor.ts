@@ -12,7 +12,7 @@ import {
   textDefaultProps
 } from '@/common/defaultProps'
 import { message } from 'ant-design-vue'
-import { cloneDeep, update } from 'lodash-es'
+import { cloneDeep, debounce, update } from 'lodash-es'
 import { insertAt } from '@/helpers'
 
 export type MoveDirection = 'Up' | 'Down' | 'Left' | 'Right'
@@ -83,6 +83,7 @@ export interface EditorProps {
   copiedComponent?: ComponentData
   histories: HistoryProps[]
   historyIndex: number
+  cachedOldValues: any
 }
 
 export type AllFormProps = PageProps & AllComponentProps
@@ -103,7 +104,7 @@ export const testComponents: ComponentData[] = [
       lineHeight: '1',
       textAlign: 'center',
       fontFamily: '黑体',
-      backgroundColor: '#0f0'
+      backgroundColor: '#00ff00'
     }
   }
   // {
@@ -160,6 +161,19 @@ const modifyHistory = (
   }
 }
 
+const pushModifyHistory = (
+  state: EditorProps,
+  { key, value, id }: UpdateComponentData
+): any => {
+  state.histories.push({
+    id: uuidV4(),
+    componentId: id || state.currentElement,
+    type: 'modify',
+    data: { oldValue: state.cachedOldValues, newValue: value, key }
+  })
+}
+const pushHistoryDebounce = debounce(pushModifyHistory, 1000)
+
 const editor: Module<EditorProps, GlobalDataProps> = {
   state: {
     components: testComponents,
@@ -169,7 +183,8 @@ const editor: Module<EditorProps, GlobalDataProps> = {
       title: 'test title'
     },
     histories: [],
-    historyIndex: -1
+    historyIndex: -1,
+    cachedOldValues: null
   },
   getters: {
     getCurrentElement(state) {
@@ -380,16 +395,11 @@ const editor: Module<EditorProps, GlobalDataProps> = {
             ? key.map((k) => updatedComponent.props[k])
             : updatedComponent.props[key]
 
-          state.histories.push({
-            id: uuidV4(),
-            componentId: id || state.currentElement,
-            type: 'modify',
-            data: {
-              oldValue,
-              newValue: value,
-              key
-            }
-          })
+          if (!state.cachedOldValues) {
+            state.cachedOldValues = oldValue
+          }
+
+          pushHistoryDebounce(state, { key, value, id })
 
           if (Array.isArray(key) && Array.isArray(value)) {
             key.forEach((keyName, index) => {

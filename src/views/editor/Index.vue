@@ -124,7 +124,6 @@ const updatePosition = (data: { left: number; top: number; id: string }) => {
 }
 
 const handleChange = (e: any) => {
-  console.log('e >>> ', e)
   store.commit('updateComponent', e)
 }
 </script>
