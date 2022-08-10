@@ -84,6 +84,7 @@ export interface EditorProps {
   histories: HistoryProps[]
   historyIndex: number
   cachedOldValues: any
+  maxHistoryNumber: number
 }
 
 export type AllFormProps = PageProps & AllComponentProps
@@ -156,8 +157,22 @@ const modifyHistory = (
           type === 'undo' ? oldValue[index] : newValue[index]
       })
     } else {
+      console.log('oldValue >>> ', newKey, oldValue)
       updatedComponent.props[newKey] = type === 'undo' ? oldValue : newValue
     }
+  }
+}
+
+const pushHistory = (state: EditorProps, historyRecord: HistoryProps) => {
+  if (state.historyIndex !== -1) {
+    state.histories = state.histories.slice(0, state.historyIndex)
+    state.historyIndex = -1
+  }
+  if (state.histories.length < state.maxHistoryNumber) {
+    state.histories.push(historyRecord)
+  } else {
+    state.histories.shift()
+    state.histories.push(historyRecord)
   }
 }
 
@@ -165,14 +180,15 @@ const pushModifyHistory = (
   state: EditorProps,
   { key, value, id }: UpdateComponentData
 ): any => {
-  state.histories.push({
+  pushHistory(state, {
     id: uuidV4(),
     componentId: id || state.currentElement,
     type: 'modify',
     data: { oldValue: state.cachedOldValues, newValue: value, key }
   })
+  state.cachedOldValues = null
 }
-const pushHistoryDebounce = debounce(pushModifyHistory, 1000)
+const pushHistoryDebounce = debounce(pushModifyHistory, 100)
 
 const editor: Module<EditorProps, GlobalDataProps> = {
   state: {
@@ -184,7 +200,8 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     },
     histories: [],
     historyIndex: -1,
-    cachedOldValues: null
+    cachedOldValues: null,
+    maxHistoryNumber: 3
   },
   getters: {
     getCurrentElement(state) {
@@ -219,7 +236,7 @@ const editor: Module<EditorProps, GlobalDataProps> = {
       component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)
       // 添加历史记录
-      state.histories.push({
+      pushHistory(state, {
         id: uuidV4(),
         componentId: component.id,
         type: 'add',
@@ -299,7 +316,7 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         state.components.push(clone)
         message.success('已黏贴当前图层')
         // 添加历史记录
-        state.histories.push({
+        pushHistory(state, {
           id: uuidV4(),
           componentId: clone.id,
           type: 'add',
@@ -320,8 +337,7 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         )
         message.success('删除当前图层成功')
         // 添加历史记录
-        console.log('currentIndex >>> ', currentIndex)
-        state.histories.push({
+        pushHistory(state, {
           id: uuidV4(),
           componentId: currentComponent.id,
           type: 'delete',
