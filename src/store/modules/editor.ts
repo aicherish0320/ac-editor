@@ -25,6 +25,13 @@ export interface HistoryProps {
   index?: number
 }
 
+export interface UpdateComponentData {
+  key: keyof AllComponentProps | Array<keyof AllComponentProps>
+  value: string | string[]
+  id: string
+  isRoot?: boolean
+}
+
 export interface ComponentData {
   props: Partial<AllComponentProps>
   id: string
@@ -130,6 +137,29 @@ const pageDefaultProps = {
   height: '660px'
 }
 
+const modifyHistory = (
+  state: EditorProps,
+  history: HistoryProps,
+  type: 'undo' | 'redo'
+) => {
+  const { componentId, data } = history
+  const { key, oldValue, newValue } = data
+  const newKey = key as keyof AllComponentProps | Array<keyof AllComponentProps>
+  const updatedComponent = state.components.find(
+    (component) => component.id === componentId
+  )
+  if (updatedComponent) {
+    if (Array.isArray(newKey)) {
+      newKey.forEach((keyName, index) => {
+        updatedComponent.props[keyName] =
+          type === 'undo' ? oldValue[index] : newValue[index]
+      })
+    } else {
+      updatedComponent.props[newKey] = type === 'undo' ? oldValue : newValue
+    }
+  }
+}
+
 const editor: Module<EditorProps, GlobalDataProps> = {
   state: {
     components: testComponents,
@@ -199,14 +229,7 @@ const editor: Module<EditorProps, GlobalDataProps> = {
           )
           break
         case 'modify': {
-          const { componentId, data } = history
-          const { key, newValue } = data
-          const updatedComponent = state.components.find(
-            (component) => component.id === componentId
-          )
-          if (updatedComponent) {
-            updatedComponent.props[key as keyof AllComponentProps] = newValue
-          }
+          modifyHistory(state, history, 'redo')
           break
         }
 
@@ -236,14 +259,7 @@ const editor: Module<EditorProps, GlobalDataProps> = {
           )
           break
         case 'modify': {
-          const { componentId, data } = history
-          const { key, oldValue } = data
-          const updatedComponent = state.components.find(
-            (component) => component.id === componentId
-          )
-          if (updatedComponent) {
-            updatedComponent.props[key as keyof AllComponentProps] = oldValue
-          }
+          modifyHistory(state, history, 'undo')
           break
         }
         default:
@@ -352,7 +368,7 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         }
       }
     },
-    updateComponent(state, { id, key, value, isRoot }) {
+    updateComponent(state, { id, key, value, isRoot }: UpdateComponentData) {
       const updatedComponent = state.components.find(
         (component) => component.id === (id || state.currentElement)
       )
@@ -360,9 +376,10 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         if (isRoot) {
           updatedComponent[key as keyof ComponentData] = value
         } else {
-          const oldValue =
-            updatedComponent.props[key as keyof TextComponentProps]
-          updatedComponent.props[key as keyof TextComponentProps] = value
+          const oldValue = Array.isArray(key)
+            ? key.map((k) => updatedComponent.props[k])
+            : updatedComponent.props[key]
+
           state.histories.push({
             id: uuidV4(),
             componentId: id || state.currentElement,
@@ -373,6 +390,14 @@ const editor: Module<EditorProps, GlobalDataProps> = {
               key
             }
           })
+
+          if (Array.isArray(key) && Array.isArray(value)) {
+            key.forEach((keyName, index) => {
+              updatedComponent.props[keyName] = value[index]
+            })
+          } else if (typeof key === 'string' && typeof value === 'string') {
+            updatedComponent.props[key] = value
+          }
         }
       }
     },

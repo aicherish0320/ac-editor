@@ -114,11 +114,13 @@ const setActive = (id: string) => {
 
 const updatePosition = (data: { left: number; top: number; id: string }) => {
   const { id } = data
-
-  const updatedData = pickBy(data, (v, k) => k !== 'od')
-  forEach(updatedData, (v, k) => {
-    store.commit('updateComponent', { key: k, value: v + 'px', id })
-  })
+  const updatedData = pickBy(data, (v, k) => k !== 'id')
+  const keysArr = Object.keys(updatedData)
+  const valuesArr = Object.values(updatedData).map((v) => v + 'px')
+  store.commit('updateComponent', { key: keysArr, value: valuesArr, id })
+  // forEach(updatedData, (v, k) => {
+  //   store.commit('updateComponent', { key: k, value: v + 'px', id })
+  // })
 }
 
 const handleChange = (e: any) => {
