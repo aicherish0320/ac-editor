@@ -17,6 +17,7 @@ const createContextMenu = (
     triggerClass
   }
   const vm = createVNode(ContextMenu, options)
+  // 将虚拟节点渲染到真实节点上
   render(vm, container)
   document.body.appendChild(container)
   return () => {
