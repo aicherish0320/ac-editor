@@ -6,8 +6,16 @@ export const works = (data: any) =>
     url: '/works',
     data
   })
+
 export const getWorkById = (data: any) =>
   request({
     method: 'get',
     url: `/works/${data}`
+  })
+
+export const saveWork = (data: any) =>
+  request({
+    method: 'patch',
+    url: `/works/${data.id}`,
+    data: data.data
   })

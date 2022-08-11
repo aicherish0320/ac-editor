@@ -14,7 +14,7 @@ import {
 import { message } from 'ant-design-vue'
 import { cloneDeep, debounce, update } from 'lodash-es'
 import { insertAt } from '@/helpers'
-import { getWorkById } from '@/apis/editor'
+import { getWorkById, saveWork } from '@/apis/editor'
 
 export type MoveDirection = 'Up' | 'Down' | 'Left' | 'Right'
 
@@ -235,8 +235,11 @@ const editor: Module<EditorProps, GlobalDataProps> = {
   actions: {
     async fetchWork({ commit }, payload) {
       const ret = await getWorkById(payload)
-      console.log('ret >>> ', ret)
       commit('fetchWork', ret)
+    },
+    async saveWork({ commit }, payload) {
+      const ret = await saveWork(payload)
+      commit('saveWork', ret)
     }
   },
   mutations: {
@@ -248,6 +251,7 @@ const editor: Module<EditorProps, GlobalDataProps> = {
       }
       state.components = content.components
     },
+    saveWork(state, data) {},
     addComponent(state, component: ComponentData) {
       component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)

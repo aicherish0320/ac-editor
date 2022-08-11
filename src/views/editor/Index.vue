@@ -140,7 +140,6 @@ onMounted(() => {
 // 获取作品
 
 const pageChange = (e) => {
-  console.log('pageChange >>> ', e)
   store.commit('updatePage', e)
 }
 
@@ -148,7 +147,17 @@ const titleChange = (newTitle: string) => {
   store.commit('updatePage', { key: 'title', value: newTitle, isRoot: true })
 }
 const preview = () => {}
-const saveWork = () => {}
+const saveWork = () => {
+  const { title, props } = page.value
+  const payload = {
+    title,
+    content: {
+      components: [],
+      props
+    }
+  }
+  store.dispatch('saveWork', { data: payload, id: currentWorkId })
+}
 const publish = () => {}
 
 const addItem = (component: any) => {
