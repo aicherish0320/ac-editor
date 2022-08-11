@@ -26,6 +26,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'ColorPicker'
+})
+
 withDefaults(defineProps<{ value?: string; colors?: string[] }>(), {
   value: '',
   colors: () => [

@@ -1,16 +1,7 @@
-import { Component, markRaw } from 'vue'
 import { Module } from 'vuex'
 import { v4 as uuidV4 } from 'uuid'
 import store, { GlobalDataProps } from '..'
-import AcText from '@/components/AcText.vue'
-import AcImage from '@/components/AcImage.vue'
-import {
-  AllComponentProps,
-  ImageComponentProps,
-  imageDefaultProps,
-  TextComponentProps,
-  textDefaultProps
-} from '@/common/defaultProps'
+import { AllComponentProps, textDefaultProps } from '@/common/defaultProps'
 import { message } from 'ant-design-vue'
 import { cloneDeep, debounce, update } from 'lodash-es'
 import { insertAt } from '@/helpers'
@@ -93,7 +84,7 @@ export type AllFormProps = PageProps & AllComponentProps
 export const testComponents: ComponentData[] = [
   {
     id: uuidV4(),
-    name: markRaw(AcText),
+    name: 'AcText',
     layerName: '图层一',
     props: {
       ...textDefaultProps,
@@ -158,7 +149,6 @@ const modifyHistory = (
           type === 'undo' ? oldValue[index] : newValue[index]
       })
     } else {
-      console.log('oldValue >>> ', newKey, oldValue)
       updatedComponent.props[newKey] = type === 'undo' ? oldValue : newValue
     }
   }
@@ -332,7 +322,8 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         const clone = cloneDeep(state.copiedComponent)
         clone.id = uuidV4()
         clone.layerName = clone.layerName + '副本'
-        clone.name = markRaw(clone.name)
+        // clone.name = markRaw(clone.name)
+        // clone.name = clone.name
         state.components.push(clone)
         message.success('已黏贴当前图层')
         // 添加历史记录

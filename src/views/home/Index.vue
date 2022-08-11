@@ -30,7 +30,6 @@ const createDesign = async () => {
   }
   try {
     const ret = await editorApi.works(payload)
-    console.log('ret >>> ', ret)
     // 833
     message.success('创建作品成功')
     router.push(`/editor/${ret.id}`)

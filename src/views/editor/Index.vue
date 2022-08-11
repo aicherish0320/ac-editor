@@ -152,7 +152,7 @@ const saveWork = () => {
   const payload = {
     title,
     content: {
-      components: [],
+      components: components.value,
       props
     }
   }

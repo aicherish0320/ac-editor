@@ -50,6 +50,10 @@
 import { computed } from 'vue'
 import ColorPicker from './ColorPicker.vue'
 
+defineOptions({
+  name: 'ShadowPicker'
+})
+
 const props = defineProps<{
   value: string
 }>()

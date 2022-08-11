@@ -6,6 +6,10 @@
 import useComponentCommon from '@/hooks/useComponentCommon'
 import { CSSProperties } from 'vue'
 
+defineOptions({
+  name: 'AcImage'
+})
+
 interface ImageComponentProps {
   // actions
   actionType?: string
