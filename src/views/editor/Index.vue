@@ -88,9 +88,11 @@ import PropsTable from './PropsTable.vue'
 import { forEach, pickBy } from 'lodash-es'
 import initHotKeys from '@/plugins/hotKeys'
 import HistoryArea from './HistoryArea.vue'
+import initContextMenu from '@/plugins/contextMenu'
 export type TabType = 'component' | 'layer' | 'page'
 
 initHotKeys()
+initContextMenu()
 
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
