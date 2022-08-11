@@ -12,6 +12,15 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src')
     }
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://182.92.168.192:8081',
+        changeOrigin: true
+        // rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
   plugins: [
     vue(),
     vueJsx(),

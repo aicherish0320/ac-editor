@@ -11,6 +11,7 @@
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
     "ant-design-vue": "^3.2.10",
+    "axios": "^0.27.2",
     "cropperjs": "^1.5.12",
     "hotkeys-js": "^3.9.4",
     "lodash-es": "^4.17.21",
