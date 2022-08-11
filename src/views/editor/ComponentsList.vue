@@ -1,8 +1,15 @@
 <template>
-  <div v-for="(item, index) in list" :key="index" @click="onItemClick(item)">
-    <AcText v-bind="item"></AcText>
+  <div class="create-component-list">
+    <div
+      class="component-item"
+      v-for="(item, index) in list"
+      :key="index"
+      @click="onItemClick(item)"
+    >
+      <AcText v-bind="item"></AcText>
+    </div>
+    <StyleUploader @success="onImageUploaded"></StyleUploader>
   </div>
-  <StyleUploader @success="onImageUploaded"></StyleUploader>
 </template>
 
 <script setup lang="ts">
@@ -49,4 +56,13 @@ const onImageUploaded = (data: any) => {
 }
 </script>
 
-<style scoped></style>
+<style>
+.component-item {
+  width: 100px;
+  margin: 0 auto;
+  margin-bottom: 15px;
+}
+.component-item > * {
+  position: static !important;
+}
+</style>

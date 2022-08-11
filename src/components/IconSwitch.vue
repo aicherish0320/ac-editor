@@ -14,7 +14,7 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    iconName: string
+    iconName: any
     checked?: boolean
     tip: string
   }>(),

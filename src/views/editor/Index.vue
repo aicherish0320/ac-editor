@@ -19,14 +19,17 @@
     <a-layout>
       <a-layout-content class="preview-container">
         <section>画布区域</section>
-        <section class="preview-list">
+        <HistoryArea></HistoryArea>
+        <section class="preview-list" id="canvas-area">
           <div class="body-container" :style="page.props">
             <EditWrapper
               v-for="component in components"
               :key="component.id"
               :id="component.id"
               :active="component.id === (currentElement && currentElement.id)"
+              :props="component.props"
               @set-active="setActive"
+              @update-position="updatePosition"
             >
               <component
                 :is="component.name"
@@ -76,13 +79,18 @@ import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store'
 import ComponentsList from './ComponentsList.vue'
-import { defaultTextTemplates } from '@/common/defaultTemplates'
+import defaultTextTemplates from '@/common/defaultTemplates'
 import { ComponentData } from '@/store/modules/editor'
 import EditWrapper from './EditWrapper.vue'
 import EditGroups from './EditGroups.vue'
 import LayerList from './LayerList.vue'
 import PropsTable from './PropsTable.vue'
+import { forEach, pickBy } from 'lodash-es'
+import initHotKeys from '@/plugins/hotKeys'
+import HistoryArea from './HistoryArea.vue'
 export type TabType = 'component' | 'layer' | 'page'
+
+initHotKeys()
 
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
@@ -104,8 +112,18 @@ const setActive = (id: string) => {
   store.commit('setActive', id)
 }
 
+const updatePosition = (data: { left: number; top: number; id: string }) => {
+  const { id } = data
+  const updatedData = pickBy(data, (v, k) => k !== 'id')
+  const keysArr = Object.keys(updatedData)
+  const valuesArr = Object.values(updatedData).map((v) => v + 'px')
+  store.commit('updateComponent', { key: keysArr, value: valuesArr, id })
+  // forEach(updatedData, (v, k) => {
+  //   store.commit('updateComponent', { key: k, value: v + 'px', id })
+  // })
+}
+
 const handleChange = (e: any) => {
-  console.log('e >>> ', e)
   store.commit('updateComponent', e)
 }
 </script>

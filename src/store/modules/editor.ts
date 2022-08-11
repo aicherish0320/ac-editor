@@ -1,7 +1,7 @@
-import { markRaw } from 'vue'
+import { Component, markRaw } from 'vue'
 import { Module } from 'vuex'
 import { v4 as uuidV4 } from 'uuid'
-import { GlobalDataProps } from '..'
+import store, { GlobalDataProps } from '..'
 import AcText from '@/components/AcText.vue'
 import AcImage from '@/components/AcImage.vue'
 import {
@@ -11,6 +11,26 @@ import {
   TextComponentProps,
   textDefaultProps
 } from '@/common/defaultProps'
+import { message } from 'ant-design-vue'
+import { cloneDeep, debounce, update } from 'lodash-es'
+import { insertAt } from '@/helpers'
+
+export type MoveDirection = 'Up' | 'Down' | 'Left' | 'Right'
+
+export interface HistoryProps {
+  id: string
+  componentId: string
+  type: 'add' | 'delete' | 'modify'
+  data: any
+  index?: number
+}
+
+export interface UpdateComponentData {
+  key: keyof AllComponentProps | Array<keyof AllComponentProps>
+  value: string | string[]
+  id: string
+  isRoot?: boolean
+}
 
 export interface ComponentData {
   props: Partial<AllComponentProps>
@@ -59,8 +79,12 @@ export interface EditorProps {
   components: ComponentData[]
   // 当前编辑的是哪个元素，uuid
   currentElement: string
-  //
   page: PageData
+  copiedComponent?: ComponentData
+  histories: HistoryProps[]
+  historyIndex: number
+  cachedOldValues: any
+  maxHistoryNumber: number
 }
 
 export type AllFormProps = PageProps & AllComponentProps
@@ -72,35 +96,39 @@ export const testComponents: ComponentData[] = [
     layerName: '图层一',
     props: {
       ...textDefaultProps,
+      width: '200px',
+      height: '100px',
       text: 'hello',
       fontSize: '20px',
-      top: '10px',
+      top: '30px',
+      left: '30px',
       lineHeight: '1',
       textAlign: 'center',
-      fontFamily: '黑体'
-    }
-  },
-  {
-    id: uuidV4(),
-    name: markRaw(AcText),
-    layerName: '图层二',
-    props: {
-      ...textDefaultProps,
-      text: 'hello2',
-      fontSize: '30px',
-      top: '40px'
-    }
-  },
-  {
-    id: uuidV4(),
-    name: markRaw(AcImage),
-    layerName: '图层三',
-    props: {
-      ...imageDefaultProps,
-      src: 'https://aic-lego.oss-cn-hangzhou.aliyuncs.com/editor-uploads/kj.jpeg',
-      width: '300px'
+      fontFamily: '黑体',
+      backgroundColor: '#00ff00'
     }
   }
+  // {
+  //   id: uuidV4(),
+  //   name: markRaw(AcText),
+  //   layerName: '图层二',
+  //   props: {
+  //     ...textDefaultProps,
+  //     text: 'hello2',
+  //     fontSize: '30px',
+  //     top: '40px'
+  //   }
+  // },
+  // {
+  //   id: uuidV4(),
+  //   name: markRaw(AcImage),
+  //   layerName: '图层三',
+  //   props: {
+  //     ...imageDefaultProps,
+  //     src: 'https://aic-lego.oss-cn-hangzhou.aliyuncs.com/editor-uploads/kj.jpeg',
+  //     width: '300px'
+  //   }
+  // }
 ]
 
 const pageDefaultProps = {
@@ -111,6 +139,57 @@ const pageDefaultProps = {
   height: '660px'
 }
 
+const modifyHistory = (
+  state: EditorProps,
+  history: HistoryProps,
+  type: 'undo' | 'redo'
+) => {
+  const { componentId, data } = history
+  const { key, oldValue, newValue } = data
+  const newKey = key as keyof AllComponentProps | Array<keyof AllComponentProps>
+  const updatedComponent = state.components.find(
+    (component) => component.id === componentId
+  )
+  if (updatedComponent) {
+    if (Array.isArray(newKey)) {
+      newKey.forEach((keyName, index) => {
+        updatedComponent.props[keyName] =
+          type === 'undo' ? oldValue[index] : newValue[index]
+      })
+    } else {
+      console.log('oldValue >>> ', newKey, oldValue)
+      updatedComponent.props[newKey] = type === 'undo' ? oldValue : newValue
+    }
+  }
+}
+
+const pushHistory = (state: EditorProps, historyRecord: HistoryProps) => {
+  if (state.historyIndex !== -1) {
+    state.histories = state.histories.slice(0, state.historyIndex)
+    state.historyIndex = -1
+  }
+  if (state.histories.length < state.maxHistoryNumber) {
+    state.histories.push(historyRecord)
+  } else {
+    state.histories.shift()
+    state.histories.push(historyRecord)
+  }
+}
+
+const pushModifyHistory = (
+  state: EditorProps,
+  { key, value, id }: UpdateComponentData
+): any => {
+  pushHistory(state, {
+    id: uuidV4(),
+    componentId: id || state.currentElement,
+    type: 'modify',
+    data: { oldValue: state.cachedOldValues, newValue: value, key }
+  })
+  state.cachedOldValues = null
+}
+const pushHistoryDebounce = debounce(pushModifyHistory, 100)
+
 const editor: Module<EditorProps, GlobalDataProps> = {
   state: {
     components: testComponents,
@@ -118,23 +197,209 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     page: {
       props: pageDefaultProps,
       title: 'test title'
-    }
+    },
+    histories: [],
+    historyIndex: -1,
+    cachedOldValues: null,
+    maxHistoryNumber: 3
   },
   getters: {
     getCurrentElement(state) {
       return state.components.find(
         (component) => component.id === state.currentElement
       )
+    },
+    getElement: (state) => (id: string) => {
+      return state.components.find(
+        (component) => component.id === id || state.currentElement
+      )
+    },
+    checkUndoDisable(state) {
+      if (state.histories.length === 0 || state.historyIndex === 0) {
+        return true
+      }
+      return false
+    },
+    checkRedoDisable(state) {
+      if (
+        state.histories.length === 0 ||
+        state.historyIndex === state.histories.length ||
+        state.historyIndex === -1
+      ) {
+        return true
+      }
+      return false
     }
   },
   mutations: {
     addComponent(state, component: ComponentData) {
+      component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)
+      // 添加历史记录
+      pushHistory(state, {
+        id: uuidV4(),
+        componentId: component.id,
+        type: 'add',
+        data: cloneDeep(component)
+      })
     },
     setActive(state, currentId: string) {
       state.currentElement = currentId
     },
-    updateComponent(state, { id, key, value, isRoot }) {
+    redo(state) {
+      if (state.historyIndex === -1) {
+        return
+      }
+      const history = state.histories[state.historyIndex]
+      switch (history.type) {
+        case 'add':
+          state.components.push(history.data)
+          break
+        case 'delete':
+          state.components = state.components.filter(
+            (component) => component.id !== history.componentId
+          )
+          break
+        case 'modify': {
+          modifyHistory(state, history, 'redo')
+          break
+        }
+
+        default:
+          break
+      }
+      state.historyIndex++
+    },
+    undo(state) {
+      if (state.historyIndex === -1) {
+        state.historyIndex = state.histories.length - 1
+      } else {
+        state.historyIndex--
+      }
+      const history = state.histories[state.historyIndex]
+      switch (history.type) {
+        case 'add':
+          state.components = state.components.filter(
+            (component) => component.id !== history.componentId
+          )
+          break
+        case 'delete':
+          state.components = insertAt(
+            state.components,
+            history.index!,
+            history.data
+          )
+          break
+        case 'modify': {
+          modifyHistory(state, history, 'undo')
+          break
+        }
+        default:
+          break
+      }
+    },
+    copyComponent(state, id) {
+      const currentComponent = state.components.find(
+        (component) => component.id === id
+      )
+      if (currentComponent) {
+        state.copiedComponent = currentComponent
+        message.success('已拷贝当前图层')
+      }
+    },
+    pasteCopiedComponent(state) {
+      if (state.copiedComponent) {
+        const clone = cloneDeep(state.copiedComponent)
+        clone.id = uuidV4()
+        clone.layerName = clone.layerName + '副本'
+        clone.name = markRaw(clone.name)
+        state.components.push(clone)
+        message.success('已黏贴当前图层')
+        // 添加历史记录
+        pushHistory(state, {
+          id: uuidV4(),
+          componentId: clone.id,
+          type: 'add',
+          data: cloneDeep(clone)
+        })
+      }
+    },
+    deleteComponent(state, id) {
+      const currentComponent = state.components.find(
+        (component) => component.id === id
+      )
+      if (currentComponent) {
+        const currentIndex = state.components.findIndex(
+          (component) => component.id === id
+        )
+        state.components = state.components.filter(
+          (component) => component.id !== id
+        )
+        message.success('删除当前图层成功')
+        // 添加历史记录
+        pushHistory(state, {
+          id: uuidV4(),
+          componentId: currentComponent.id,
+          type: 'delete',
+          data: currentComponent,
+          index: currentIndex
+        })
+      }
+    },
+    moveComponent(
+      state,
+      data: { direction: MoveDirection; amount: number; id: string }
+    ) {
+      const currentComponent = state.components.find(
+        (component) => component.id === data.id
+      )
+      if (currentComponent) {
+        const oldTop = parseInt(currentComponent.props.top || '0')
+        const oldLeft = parseInt(currentComponent.props.left || '0')
+        const { direction, amount } = data
+        switch (direction) {
+          case 'Up': {
+            const newValue = oldTop - amount + 'px'
+            store.commit('updateComponent', {
+              key: 'top',
+              value: newValue,
+              id: data.id
+            })
+            break
+          }
+          case 'Down': {
+            const newValue = oldTop + amount + 'px'
+            store.commit('updateComponent', {
+              key: 'top',
+              value: newValue,
+              id: data.id
+            })
+            break
+          }
+          case 'Left': {
+            const newValue = oldLeft - amount + 'px'
+            store.commit('updateComponent', {
+              key: 'left',
+              value: newValue,
+              id: data.id
+            })
+            break
+          }
+          case 'Right': {
+            const newValue = oldLeft + amount + 'px'
+            store.commit('updateComponent', {
+              key: 'left',
+              value: newValue,
+              id: data.id
+            })
+            break
+          }
+          default:
+            break
+        }
+      }
+    },
+    updateComponent(state, { id, key, value, isRoot }: UpdateComponentData) {
       const updatedComponent = state.components.find(
         (component) => component.id === (id || state.currentElement)
       )
@@ -142,7 +407,23 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         if (isRoot) {
           updatedComponent[key as keyof ComponentData] = value
         } else {
-          updatedComponent.props[key as keyof TextComponentProps] = value
+          const oldValue = Array.isArray(key)
+            ? key.map((k) => updatedComponent.props[k])
+            : updatedComponent.props[key]
+
+          if (!state.cachedOldValues) {
+            state.cachedOldValues = oldValue
+          }
+
+          pushHistoryDebounce(state, { key, value, id })
+
+          if (Array.isArray(key) && Array.isArray(value)) {
+            key.forEach((keyName, index) => {
+              updatedComponent.props[keyName] = value[index]
+            })
+          } else if (typeof key === 'string' && typeof value === 'string') {
+            updatedComponent.props[key] = value
+          }
         }
       }
     },
