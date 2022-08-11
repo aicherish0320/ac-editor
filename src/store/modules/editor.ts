@@ -443,8 +443,10 @@ const editor: Module<EditorProps, GlobalDataProps> = {
         }
       }
     },
-    updatePage(state, { key, value }) {
-      if (state.page.props) {
+    updatePage(state, { key, value, isRoot }) {
+      if (isRoot) {
+        state.page[key as keyof PageData] = value
+      } else if (state.page.props) {
         state.page.props[key as keyof PageProps] = value
       }
     }

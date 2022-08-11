@@ -1,11 +1,37 @@
 <template>
   <a-layout>
     <a-layout-header class="header">
+      <div class="page-title">
+        <router-link to="/">
+          <img alt="慕课乐高" src="@/assets/logo-simple.png" class="logo-img" />
+        </router-link>
+        <InlineEdit :value="page.title" @change="titleChange" />
+      </div>
+      <a-menu
+        :selectable="false"
+        theme="dark"
+        mode="horizontal"
+        :style="{ lineHeight: '64px' }"
+      >
+        <a-menu-item key="1">
+          <a-button type="primary" @click="preview">预览和设置</a-button>
+        </a-menu-item>
+        <a-menu-item key="2">
+          <a-button type="primary" @click="saveWork">保存</a-button>
+        </a-menu-item>
+        <a-menu-item key="3">
+          <a-button type="primary" @click="publish">发布</a-button>
+        </a-menu-item>
+      </a-menu>
+    </a-layout-header>
+  </a-layout>
+  <!-- <a-layout>
+    <a-layout-header class="header">
       <router-link to="/">
         <span class="title">作品名称</span>
       </router-link>
     </a-layout-header>
-  </a-layout>
+  </a-layout> -->
   <a-layout>
     <a-layout-sider width="300" class="sider sider-left">
       <section class="title">
@@ -90,6 +116,7 @@ import initHotKeys from '@/plugins/hotKeys'
 import HistoryArea from './HistoryArea.vue'
 import initContextMenu from '@/plugins/contextMenu'
 import { useRoute } from 'vue-router'
+import InlineEdit from './InlineEdit.vue'
 export type TabType = 'component' | 'layer' | 'page'
 
 initHotKeys()
@@ -117,6 +144,13 @@ const pageChange = (e) => {
   store.commit('updatePage', e)
 }
 
+const titleChange = (newTitle: string) => {
+  store.commit('updatePage', { key: 'title', value: newTitle, isRoot: true })
+}
+const preview = () => {}
+const saveWork = () => {}
+const publish = () => {}
+
 const addItem = (component: any) => {
   store.commit('addComponent', component)
 }
@@ -143,6 +177,14 @@ const handleChange = (e: any) => {
 <style scoped lang="scss">
 .header {
   color: #fff;
+  display: flex;
+  justify-content: space-between;
+  .logo-img {
+    margin-right: 10px;
+  }
+  .page-title {
+    display: flex;
+  }
   .title {
     cursor: pointer;
   }
