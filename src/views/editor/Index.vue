@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store'
 import ComponentsList from './ComponentsList.vue'
@@ -89,11 +89,13 @@ import { forEach, pickBy } from 'lodash-es'
 import initHotKeys from '@/plugins/hotKeys'
 import HistoryArea from './HistoryArea.vue'
 import initContextMenu from '@/plugins/contextMenu'
+import { useRoute } from 'vue-router'
 export type TabType = 'component' | 'layer' | 'page'
 
 initHotKeys()
 initContextMenu()
 
+const route = useRoute()
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
 const page = computed(() => store.state.editor.page)
@@ -101,6 +103,14 @@ const activePanel = ref<TabType>('component')
 const currentElement = computed<ComponentData | null>(
   () => store.getters.getCurrentElement
 )
+
+const currentWorkId = route.params.id
+onMounted(() => {
+  if (currentWorkId) {
+    store.dispatch('fetchWork', currentWorkId)
+  }
+})
+// 获取作品
 
 const pageChange = (e) => {
   console.log('pageChange >>> ', e)

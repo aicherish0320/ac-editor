@@ -24,6 +24,7 @@ request.interceptors.response.use(
       // 登陆
       if (config.url === '/users/loginByPhoneNumber') {
         const token = responseData.data.token
+        localStorage.setItem('ac_editor_token', token)
         request.defaults.headers.common.Authorization = `Bearer ${token}`
       }
 
