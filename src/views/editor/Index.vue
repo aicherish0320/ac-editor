@@ -177,21 +177,25 @@ const publish = async () => {
   const el = document.getElementById('canvas-area') as HTMLElement
   canvasFix.value = true
   await nextTick()
-  const ret = await takeScreenshotAndUpload(el)
-  if (ret) {
-    // 截屏是为了获取 coverImg
-    store.commit('updatePage', {
-      key: 'coverImg',
-      value: ret.urls[0],
-      isRoot: true
-    })
-    // 保存
-    await saveWork()
-    // 发布
-    await store.dispatch('publishWork', currentWorkId)
+  try {
+    const ret = await takeScreenshotAndUpload(el)
+    if (ret) {
+      // 截屏是为了获取 coverImg
+      store.commit('updatePage', {
+        key: 'coverImg',
+        value: ret.urls[0],
+        isRoot: true
+      })
+      // 保存
+      await saveWork()
+      // 发布
+      await store.dispatch('publishWork', currentWorkId)
+    }
+  } catch (error) {
+    console.log('error >>> ', error)
+  } finally {
+    canvasFix.value = false
   }
-
-  canvasFix.value = false
 }
 
 const addItem = (component: any) => {

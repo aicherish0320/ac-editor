@@ -7,7 +7,7 @@ import useComponentCommon from '@/hooks/useComponentCommon'
 import { CSSProperties } from 'vue'
 
 defineOptions({
-  name: 'AcImage'
+  name: 'l-image'
 })
 
 interface ImageComponentProps {

@@ -84,7 +84,7 @@ export type AllFormProps = PageProps & AllComponentProps
 export const testComponents: ComponentData[] = [
   {
     id: uuidV4(),
-    name: 'LText',
+    name: 'l-text',
     layerName: '图层一',
     props: {
       ...textDefaultProps,

@@ -9,7 +9,7 @@ import { CSSProperties } from 'vue'
 import useComponentCommon from '@/hooks/useComponentCommon'
 
 defineOptions({
-  name: 'AcText'
+  name: 'l-text'
 })
 
 interface TextComponentProps {
