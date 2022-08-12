@@ -115,7 +115,7 @@ import { forEach, pickBy } from 'lodash-es'
 import initHotKeys from '@/plugins/hotKeys'
 import HistoryArea from './HistoryArea.vue'
 import initContextMenu from '@/plugins/contextMenu'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import InlineEdit from './InlineEdit.vue'
 export type TabType = 'component' | 'layer' | 'page'
 
@@ -158,6 +158,11 @@ const saveWork = () => {
   }
   store.dispatch('saveWork', { data: payload, id: currentWorkId })
 }
+
+onBeforeRouteLeave((to, from, next) => {
+  // 如果有改动，则在跳转之前，自动保存
+})
+
 const publish = () => {}
 
 const addItem = (component: any) => {
