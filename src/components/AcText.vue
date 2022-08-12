@@ -8,6 +8,10 @@
 import { CSSProperties } from 'vue'
 import useComponentCommon from '@/hooks/useComponentCommon'
 
+defineOptions({
+  name: 'AcText'
+})
+
 interface TextComponentProps {
   // actions
   actionType?: string

@@ -2,6 +2,7 @@
   <div
     class="edit-wrapper"
     ref="editorWrapperRef"
+    :data-component-id="id"
     :style="styles"
     :class="{ active: active }"
     @click="onItemClick(id)"

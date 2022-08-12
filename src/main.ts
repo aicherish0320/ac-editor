@@ -7,6 +7,11 @@ import router from './router'
 import store from './store'
 
 // antd
-import 'ant-design-vue/es/message/style/index.css'
+import Antd from 'ant-design-vue'
+import 'ant-design-vue/dist/antd.css'
 
-createApp(App).use(router).use(store).mount('#app')
+import registerComponents from './common/registerComponents'
+
+const app = createApp(App)
+
+app.use(Antd).use(registerComponents).use(router).use(store).mount('#app')

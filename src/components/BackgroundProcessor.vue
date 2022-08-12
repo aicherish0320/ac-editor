@@ -14,6 +14,9 @@
 import StyleUploader from './StyleUploader.vue'
 import ImageProcessor from './ImageProcessor.vue'
 
+defineOptions({
+  name: 'BackgroundProcessor'
+})
 const props = defineProps<{
   value: string
 }>()

@@ -24,6 +24,14 @@ const props = defineProps<{
 }>()
 const emits = defineEmits(['change'])
 const innerValue = ref(props.value)
+
+watch(
+  () => props.value,
+  (newVal) => {
+    innerValue.value = newVal
+  }
+)
+
 const isEditing = ref(false)
 const inlineEditRef = ref<null | HTMLElement>(null)
 const inputRef = ref<null | HTMLInputElement>(null)
@@ -70,7 +78,6 @@ useKeyPress('Escape', () => {
 
 <style>
 .inline-edit {
-  border: 1px solid red;
   cursor: pointer;
 }
 .ant-input.input-error {

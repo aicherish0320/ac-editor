@@ -1,31 +1,5 @@
-import { markRaw, VNode, h } from 'vue'
-import { AllComponentProps } from './defaultProps'
-import ColorPicker from '@/components/ColorPicker.vue'
-import ImageProcessor from '@/components/ImageProcessor.vue'
-import ShadowPicker from '@/components/ShadowPicker.vue'
-import IconSwitch from '@/components/IconSwitch.vue'
-import BackgroundProcessor from '@/components/BackgroundProcessor.vue'
+import { VNode, h } from 'vue'
 
-import {
-  BoldOutlined,
-  ItalicOutlined,
-  UnderlineOutlined
-} from '@ant-design/icons-vue'
-import {
-  Textarea,
-  InputNumber,
-  Slider,
-  RadioButton,
-  RadioGroup,
-  Select,
-  SelectOption,
-  Input
-} from 'ant-design-vue'
-import 'ant-design-vue/es/input/style/index.css'
-import 'ant-design-vue/es/input-number/style/index.css'
-import 'ant-design-vue/es/slider/style/index.css'
-import 'ant-design-vue/es/radio/style/index.css'
-import 'ant-design-vue/es/select/style/index.css'
 import { AllFormProps } from '@/store/modules/editor'
 
 export interface PropToForm {
@@ -59,13 +33,13 @@ const fontFamilyOptions = fontFamilyArr.map((font) => {
 })
 
 const pxToNumberHandler: PropToForm = {
-  component: markRaw(InputNumber),
+  component: 'AInputNumber',
   initialTransform: (v: string) => (v ? parseInt(v) : 0),
   afterTransform: (e: number) => (e ? `${e}px` : '')
 }
 
 const defaultHandler = {
-  component: markRaw(Input),
+  component: 'AInput',
   eventName: 'change',
   valueProp: 'value',
   initialTransform: (v: any) => v,
@@ -74,7 +48,7 @@ const defaultHandler = {
 
 export const mapPropsToForms: PropsToForms = {
   text: {
-    component: markRaw(Textarea),
+    component: 'ATextarea',
     extraProps: { rows: 3 },
     text: '文本',
     afterTransform: (e: any) => e.target.value
@@ -84,7 +58,7 @@ export const mapPropsToForms: PropsToForms = {
     ...pxToNumberHandler
   },
   lineHeight: {
-    component: markRaw(Slider),
+    component: 'ASlider',
     extraProps: {
       min: 0,
       max: 3,
@@ -95,8 +69,8 @@ export const mapPropsToForms: PropsToForms = {
     afterTransform: (e: number) => e.toString()
   },
   textAlign: {
-    component: markRaw(RadioGroup),
-    subComponent: markRaw(RadioButton),
+    component: 'ARadioGroup',
+    subComponent: 'ARadioButton',
     text: '对齐',
     options: [
       { value: 'left', text: '左' },
@@ -106,31 +80,31 @@ export const mapPropsToForms: PropsToForms = {
     afterTransform: (e: any) => e.target.value
   },
   fontFamily: {
-    component: markRaw(Select),
-    subComponent: markRaw(SelectOption),
+    component: 'ASelect',
+    subComponent: 'ASelectOption',
     text: '字体',
     options: [{ text: '无', value: '' }, ...fontFamilyOptions]
   },
   fontWeight: {
-    component: markRaw(IconSwitch),
+    component: 'IconSwitch',
     initialTransform: (v: string) => v === 'bold',
     afterTransform: (e: boolean) => (e ? 'bold' : 'normal'),
     valueProp: 'checked',
-    extraProps: { iconName: markRaw(BoldOutlined), tip: '加粗' }
+    extraProps: { iconName: 'BoldOutlined3', tip: '加粗' }
   },
   fontStyle: {
-    component: markRaw(IconSwitch),
+    component: 'IconSwitch',
     initialTransform: (v: string) => v === 'italic',
     afterTransform: (e: boolean) => (e ? 'italic' : 'normal'),
     valueProp: 'checked',
-    extraProps: { iconName: markRaw(ItalicOutlined), tip: '斜体' }
+    extraProps: { iconName: 'ItalicOutlined3', tip: '斜体' }
   },
   textDecoration: {
-    component: markRaw(IconSwitch),
+    component: 'IconSwitch',
     initialTransform: (v: string) => v === 'underline',
     afterTransform: (e: boolean) => (e ? 'underline' : 'none'),
     valueProp: 'checked',
-    extraProps: { iconName: markRaw(UnderlineOutlined), tip: '下划线' }
+    extraProps: { iconName: 'UnderlineOutlined3', tip: '下划线' }
   },
   width: {
     text: '宽度',
@@ -158,16 +132,16 @@ export const mapPropsToForms: PropsToForms = {
   },
   color: {
     text: '字体颜色',
-    component: markRaw(ColorPicker)
+    component: 'ColorPicker'
   },
   backgroundColor: {
     text: '背景颜色',
-    component: markRaw(ColorPicker)
+    component: 'ColorPicker'
   },
   borderStyle: {
     ...defaultHandler,
-    component: markRaw(Select),
-    subComponent: markRaw(SelectOption),
+    component: 'ASelect',
+    subComponent: 'ASelectOption',
     text: '边框类型',
     options: [
       {
@@ -190,23 +164,23 @@ export const mapPropsToForms: PropsToForms = {
   },
   borderColor: {
     ...defaultHandler,
-    component: markRaw(ColorPicker),
+    component: 'ColorPicker',
     text: '边框颜色'
   },
   borderWidth: {
     ...pxToNumberHandler,
-    component: markRaw(Slider),
+    component: 'ASlider',
     text: '边框宽度',
     extraProps: { min: 0, max: 20 }
   },
   borderRadius: {
     ...pxToNumberHandler,
-    component: markRaw(Slider),
+    component: 'ASlider',
     text: '边框圆角',
     extraProps: { min: 0, max: 20 }
   },
   opacity: {
-    component: markRaw(Slider),
+    component: 'ASlider',
     text: '透明度',
     initialTransform: (v: number) => (v ? v * 100 : 100),
     afterTransform: (e: number) => e / 100,
@@ -222,8 +196,8 @@ export const mapPropsToForms: PropsToForms = {
   },
   actionType: {
     ...defaultHandler,
-    component: markRaw(Select),
-    subComponent: markRaw(SelectOption),
+    component: 'ASelect',
+    subComponent: 'ASelectOption',
     text: '点击',
     options: [
       {
@@ -242,15 +216,15 @@ export const mapPropsToForms: PropsToForms = {
     text: '链接'
   },
   src: {
-    component: markRaw(ImageProcessor)
+    component: 'ImageProcessor'
   },
   boxShadow: {
-    component: markRaw(ShadowPicker),
+    component: 'ShadowPicker',
     extraClass: ['w100']
   },
   backgroundImage: {
     ...defaultHandler,
-    component: markRaw(BackgroundProcessor),
+    component: 'BackgroundProcessor',
     initialTransform: (v: string) => {
       if (v) {
         const reg = /\(["'](.+)["']\)/g

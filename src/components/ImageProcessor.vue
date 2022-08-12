@@ -37,6 +37,10 @@ import { ScissorOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 import { ref, computed, watch, nextTick } from 'vue'
 import Cropper from 'cropperjs'
 
+defineOptions({
+  name: 'ImageProcessor'
+})
+
 const props = withDefaults(
   defineProps<{
     showDelete?: boolean

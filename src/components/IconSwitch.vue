@@ -12,6 +12,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'IconSwitch'
+})
+
 const props = withDefaults(
   defineProps<{
     iconName: any
