@@ -111,9 +111,9 @@ const postFile = (readyFile: UploadFile) => {
     })
     .then((resp: any) => {
       readyFile.status = 'success'
-      readyFile.resp = resp.data
+      readyFile.resp = resp
       emits('success', {
-        resp: resp.data,
+        resp,
         file: readyFile,
         list: filesList.value
       })

@@ -40,7 +40,6 @@
           :list="defaultTextTemplates"
           @onItemClick="addItem"
         ></ComponentsList>
-        <img id="test-img" alt="img" height="300" />
       </section>
     </a-layout-sider>
     <a-layout>
@@ -123,6 +122,7 @@ import initContextMenu from '@/plugins/contextMenu'
 import html2canvas from 'html2canvas'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import InlineEdit from './InlineEdit.vue'
+import { takeScreenshotAndUpload } from '@/helpers'
 export type TabType = 'component' | 'layer' | 'page'
 
 initHotKeys()
@@ -176,10 +176,14 @@ const publish = async () => {
   const el = document.getElementById('canvas-area') as HTMLElement
   canvasFix.value = true
   await nextTick()
-  html2canvas(el, { width: 375, useCORS: true, scale: 1 }).then((canvas) => {
-    const img = document.getElementById('test-img') as HTMLImageElement
-    img.src = canvas.toDataURL()
-  })
+  const ret = await takeScreenshotAndUpload(el)
+  console.log('ert >>> ', ret)
+  canvasFix.value = false
+
+  // html2canvas(el, { width: 375, useCORS: true, scale: 1 }).then((canvas) => {
+  //   const img = document.getElementById('test-img') as HTMLImageElement
+  //   img.src = canvas.toDataURL()
+  // })
 }
 
 const addItem = (component: any) => {

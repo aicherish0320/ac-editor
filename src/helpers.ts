@@ -59,7 +59,7 @@ async function uploadFile(
   const newFile = file instanceof File ? file : new File([file], fileName)
   const formData = new FormData()
   formData.append(newFile.name, newFile)
-  const { data } = await request.post(url, formData, {
+  const data = await request.post(url, formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   })
   return data
