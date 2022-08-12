@@ -132,6 +132,7 @@ const route = useRoute()
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
 const page = computed(() => store.state.editor.page)
+const channels = computed(() => store.state.editor.channels)
 const activePanel = ref<TabType>('component')
 const currentElement = computed<ComponentData | null>(
   () => store.getters.getCurrentElement
@@ -190,6 +191,14 @@ const publish = async () => {
       await saveWork()
       // 发布
       await store.dispatch('publishWork', currentWorkId)
+      // 获取渠道列表
+      await store.dispatch('fetchChannels', currentWorkId)
+      if (!channels.value.length) {
+        await store.dispatch('createChannel', {
+          name: '默认',
+          workId: parseInt(currentWorkId as string)
+        })
+      }
     }
   } catch (error) {
     console.log('error >>> ', error)

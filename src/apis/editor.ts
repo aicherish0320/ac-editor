@@ -44,3 +44,16 @@ export const delChannel = (data: any) =>
     method: 'delete',
     url: `/channel/${data}`
   })
+
+export const fetchChannels = (data: any) =>
+  request({
+    method: 'get',
+    url: `/channel/getWorkChannels/${data}`
+  })
+
+export const createChannel = (data: any) =>
+  request({
+    method: 'post',
+    url: '/channel',
+    data
+  })
