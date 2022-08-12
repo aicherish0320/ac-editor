@@ -1,7 +1,7 @@
 <template>
   <Uploader
     class="styled-uploader"
-    action="http://localhost:3300/upload"
+    action="/utils/upload-img"
     @success="
       (data) => {
         handleUploadSuccess(data.resp, data.file.raw)
