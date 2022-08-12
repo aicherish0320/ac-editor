@@ -118,3 +118,11 @@ declare module '*.vue' {
 
 - 同域文件的下载
 - 跨域文件的下载
+
+## HTML2Canvas 截图原理
+
+- 创建一个 canvas 元素
+- 创建 svg 文件，使用 Blob 构造函数
+- 将 svg 中的值填充 foreignObject，然后填充想要复制节点的 html
+- 创建 image 标签，将 `image.src = URL.createObjectURL(svg)`
+- 在 image 完成读取以后，调用 canvas 的 drawImage 方法，将图片绘制到画布上
