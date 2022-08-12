@@ -147,7 +147,7 @@ onMounted(() => {
 })
 // 获取作品
 
-const pageChange = (e) => {
+const pageChange = (e: any) => {
   store.commit('updatePage', e)
 }
 
@@ -156,9 +156,10 @@ const titleChange = (newTitle: string) => {
 }
 const preview = () => {}
 const saveWork = () => {
-  const { title, props } = page.value
+  const { title, props, coverImg } = page.value
   const payload = {
     title,
+    coverImg,
     content: {
       components: components.value,
       props
@@ -177,13 +178,20 @@ const publish = async () => {
   canvasFix.value = true
   await nextTick()
   const ret = await takeScreenshotAndUpload(el)
-  console.log('ert >>> ', ret)
-  canvasFix.value = false
+  if (ret) {
+    // 截屏是为了获取 coverImg
+    store.commit('updatePage', {
+      key: 'coverImg',
+      value: ret.urls[0],
+      isRoot: true
+    })
+    // 保存
+    await saveWork()
+    // 发布
+    await store.dispatch('publishWork', currentWorkId)
+  }
 
-  // html2canvas(el, { width: 375, useCORS: true, scale: 1 }).then((canvas) => {
-  //   const img = document.getElementById('test-img') as HTMLImageElement
-  //   img.src = canvas.toDataURL()
-  // })
+  canvasFix.value = false
 }
 
 const addItem = (component: any) => {

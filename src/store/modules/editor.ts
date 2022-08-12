@@ -5,7 +5,7 @@ import { AllComponentProps, textDefaultProps } from '@/common/defaultProps'
 import { message } from 'ant-design-vue'
 import { cloneDeep, debounce, update } from 'lodash-es'
 import { insertAt } from '@/helpers'
-import { getWorkById, saveWork } from '@/apis/editor'
+import { getWorkById, publishWork, saveWork } from '@/apis/editor'
 
 export type MoveDirection = 'Up' | 'Down' | 'Left' | 'Right'
 
@@ -84,7 +84,7 @@ export type AllFormProps = PageProps & AllComponentProps
 export const testComponents: ComponentData[] = [
   {
     id: uuidV4(),
-    name: 'AcText',
+    name: 'LText',
     layerName: '图层一',
     props: {
       ...textDefaultProps,
@@ -230,6 +230,10 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     async saveWork({ commit }, payload) {
       const ret = await saveWork(payload)
       commit('saveWork', ret)
+    },
+    async publishWork(_, payload) {
+      const ret = await publishWork(payload)
+      console.log('ret >>> ', ret)
     }
   },
   mutations: {

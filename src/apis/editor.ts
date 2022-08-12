@@ -23,8 +23,7 @@ export const saveWork = (data: any) =>
 export const publishWork = (data: any) =>
   request({
     method: 'post',
-    url: `/works/publish/${data.id}`,
-    data: data.data
+    url: `/works/publish/${data}`
   })
 
 export const getChannel = (data: any) =>
