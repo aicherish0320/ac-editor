@@ -148,7 +148,7 @@ onMounted(() => {
     }
   })
 })
-
+// 添加渠道的时候 也需要生成二维码
 watch(
   channels,
   async (newChannels, oldChannels) => {
