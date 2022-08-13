@@ -1,5 +1,6 @@
 import html2canvas from 'html2canvas'
 import request from './utils/request'
+import QRCode from 'qrcode'
 
 export const getImageDimensions = (url: string | File) => {
   return new Promise<{ width: number; height: number }>((resolve, reject) => {
@@ -63,4 +64,26 @@ async function uploadFile(
     headers: { 'Content-Type': 'multipart/form-data' }
   })
   return data
+}
+
+export function generateQRCode(id: string, url: string, width = 100) {
+  const ele = document.getElementById(id) as HTMLCanvasElement
+  return QRCode.toCanvas(ele, url, { width })
+}
+
+export function copyToClipBoard(text: string) {
+  const textarea = document.createElement('textarea')
+  textarea.style.position = 'fixed'
+  textarea.style.top = '0'
+  textarea.style.left = '-9999px'
+  document.body.appendChild(textarea)
+  textarea.select()
+
+  try {
+    return document.execCommand('copy')
+  } catch (e) {
+    console.warn('copy failed', e)
+  } finally {
+    document.body.removeChild(textarea)
+  }
 }
