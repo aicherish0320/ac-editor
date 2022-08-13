@@ -126,3 +126,8 @@ declare module '*.vue' {
 - 将 svg 中的值填充 foreignObject，然后填充想要复制节点的 html
 - 创建 image 标签，将 `image.src = URL.createObjectURL(svg)`
 - 在 image 完成读取以后，调用 canvas 的 drawImage 方法，将图片绘制到画布上
+
+## 复制到剪切板的原理
+
+- 方法一：最现代的 `Clipboard API`
+- 方法二：`document.execCommand()` 方法
