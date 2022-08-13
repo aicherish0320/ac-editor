@@ -1,4 +1,12 @@
 <template>
+  <a-modal
+    title="发布成功"
+    v-model:visible="showPublishForm"
+    width="700px"
+    :footer="null"
+  >
+    <PublishForm></PublishForm>
+  </a-modal>
   <a-layout>
     <a-layout-header class="header">
       <div class="page-title">
@@ -120,6 +128,7 @@ import initHotKeys from '@/plugins/hotKeys'
 import HistoryArea from './HistoryArea.vue'
 import initContextMenu from '@/plugins/contextMenu'
 import html2canvas from 'html2canvas'
+import PublishForm from '@/components/PublishForm.vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import InlineEdit from './InlineEdit.vue'
 import { takeScreenshotAndUpload } from '@/helpers'
@@ -137,7 +146,7 @@ const activePanel = ref<TabType>('component')
 const currentElement = computed<ComponentData | null>(
   () => store.getters.getCurrentElement
 )
-
+const showPublishForm = ref(false)
 const canvasFix = ref(false)
 
 const currentWorkId = route.params.id
@@ -180,6 +189,7 @@ const publish = async () => {
   await nextTick()
   try {
     const ret = await takeScreenshotAndUpload(el)
+
     if (ret) {
       // 截屏是为了获取 coverImg
       store.commit('updatePage', {
@@ -199,6 +209,7 @@ const publish = async () => {
           workId: parseInt(currentWorkId as string)
         })
       }
+      showPublishForm.value = true
     }
   } catch (error) {
     console.log('error >>> ', error)

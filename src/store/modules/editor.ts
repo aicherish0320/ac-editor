@@ -7,6 +7,7 @@ import { cloneDeep, debounce, update } from 'lodash-es'
 import { insertAt } from '@/helpers'
 import {
   createChannel,
+  delChannel,
   fetchChannels,
   getWorkById,
   publishWork,
@@ -255,6 +256,12 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     async createChannel({ commit }, payload) {
       const ret = await createChannel(payload)
       console.log('ret createChannel >>> ', ret)
+      commit('createChannel', ret)
+    },
+    async deleteChannel({ commit }, payload) {
+      const ret = await delChannel(payload)
+      commit('deleteChannel', payload)
+      console.log('deleteChannel >>> ', ret)
     }
   },
   mutations: {
@@ -272,6 +279,11 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     },
     createChannel(state, channel) {
       state.channels = [...state.channels, channel]
+    },
+    deleteChannel(state, data) {
+      if (data) {
+        state.channels = state.channels.filter((channel) => channel.id !== data)
+      }
     },
     addComponent(state, component: ComponentData) {
       component.layerName = '图层' + (state.components.length + 1)
