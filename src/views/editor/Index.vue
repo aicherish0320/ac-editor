@@ -7,6 +7,10 @@
   >
     <PublishForm></PublishForm>
   </a-modal>
+  <PreviewForm
+    v-model:visible="showPreviewForm"
+    v-if="showPreviewForm"
+  ></PreviewForm>
   <a-layout>
     <a-layout-header class="header">
       <div class="page-title">
@@ -132,6 +136,7 @@ import PublishForm from '@/components/PublishForm.vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import InlineEdit from './InlineEdit.vue'
 import { takeScreenshotAndUpload } from '@/helpers'
+import PreviewForm from '@/components/PreviewForm.vue'
 export type TabType = 'component' | 'layer' | 'page'
 
 initHotKeys()
@@ -147,6 +152,7 @@ const currentElement = computed<ComponentData | null>(
   () => store.getters.getCurrentElement
 )
 const showPublishForm = ref(false)
+const showPreviewForm = ref(false)
 const canvasFix = ref(false)
 
 const currentWorkId = route.params.id
@@ -164,7 +170,9 @@ const pageChange = (e: any) => {
 const titleChange = (newTitle: string) => {
   store.commit('updatePage', { key: 'title', value: newTitle, isRoot: true })
 }
-const preview = () => {}
+const preview = () => {
+  showPreviewForm.value = true
+}
 const saveWork = () => {
   const { title, props, coverImg } = page.value
   const payload = {

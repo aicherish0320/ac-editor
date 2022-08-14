@@ -88,3 +88,6 @@ export function copyToClipBoard(text: string) {
     document.body.removeChild(textarea)
   }
 }
+export function timeout(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
