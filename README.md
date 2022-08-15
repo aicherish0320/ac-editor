@@ -170,5 +170,16 @@ declare module '*.vue' {
 
 - Loader
   - 用于对模块的源代码进行转换
-- Plugin
-  -
+- ## Plugin
+
+### 个性化构建结果，`vue.config.js`
+
+- publicPath
+- css.loaderOptions
+
+### 使用 SplitChunksPlugin 继续优化文件大小
+
+- 充分利用浏览的缓存
+- 浏览器支持平行加载多个文件
+  - HTTP1.1
+  - HTTP2
