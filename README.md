@@ -107,3 +107,57 @@ declare module '*.vue' {
 - 元素拖拽改变大小
 - 快捷键的实现
 - 撤销和重做
+
+## 作品发布流程
+
+- 对编辑区域进行截图
+- 截图完成重新上传文件
+- 上传完成保存作品并且创建渠道
+
+## 前端下载文件的原理
+
+- 同域文件的下载
+- 跨域文件的下载
+
+## HTML2Canvas 截图原理
+
+- 创建一个 canvas 元素
+- 创建 svg 文件，使用 Blob 构造函数
+- 将 svg 中的值填充 foreignObject，然后填充想要复制节点的 html
+- 创建 image 标签，将 `image.src = URL.createObjectURL(svg)`
+- 在 image 完成读取以后，调用 canvas 的 drawImage 方法，将图片绘制到画布上
+
+## 复制到剪切板的原理
+
+- 方法一：最现代的 `Clipboard API`
+- 方法二：`document.execCommand()` 方法
+
+## 下载文件原理
+
+- a 标签
+  - 创建 A 链接
+  - 设置 href 以及 download 属性
+  - 触发 A 链接的点击事件
+
+## FileSaver.js
+
+借助 HTTP 特殊的相应头发出浏览器自动下载
+
+**Content-Disposition** 最佳的下载方式，需要服务器端端的支持，并且不需要任何的 JavaScript，需要在 HTTP 头部添加
+
+```js
+'Content-Type': 'application/octet-stream;charset=urf-8'
+'Content-Disposition': attachment;filename='filename.jpg'
+```
+
+## 部署以及性能优化
+
+> 减少代码体积、加快响应速度
+
+- Vue CLI 编译不同环境的代码
+- Webpack
+- 个性化 VueCLI 编译来完成打包分析和优化
+- 部署以及 HTTP 传输优化
+  - 使用 HTTP 缓存 expires 到 cache-control
+  - 使用 HTTP 数据压缩 gzip 到 Brotli 到静态生成
+  - 使用 HTTP 协议特性从 keep-alive 到 HTTP/2

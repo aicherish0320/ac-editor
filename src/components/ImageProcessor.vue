@@ -50,7 +50,7 @@ const props = withDefaults(
     showDelete: false
   }
 )
-const emits = defineEmits(['change'])
+const emits = defineEmits(['change', 'uploaded'])
 
 interface CropDataProps {
   x: number
@@ -100,8 +100,10 @@ const handleDelete = () => {
 }
 
 const handleFileUploaded = (data: any) => {
+  const { resp } = data
   message.success('上传成功')
-  emits('change', data.resp.url)
+  emits('change', resp.urls[0])
+  emits('uploaded', data)
 }
 
 watch(

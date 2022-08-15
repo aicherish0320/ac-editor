@@ -1,4 +1,16 @@
 <template>
+  <a-modal
+    title="发布成功"
+    v-model:visible="showPublishForm"
+    width="700px"
+    :footer="null"
+  >
+    <PublishForm></PublishForm>
+  </a-modal>
+  <PreviewForm
+    v-model:visible="showPreviewForm"
+    v-if="showPreviewForm"
+  ></PreviewForm>
   <a-layout>
     <a-layout-header class="header">
       <div class="page-title">
@@ -46,7 +58,11 @@
       <a-layout-content class="preview-container">
         <section>画布区域</section>
         <HistoryArea></HistoryArea>
-        <section class="preview-list" id="canvas-area">
+        <section
+          class="preview-list"
+          id="canvas-area"
+          :class="{ 'canvas-fix': canvasFix }"
+        >
           <div class="body-container" :style="page.props">
             <EditWrapper
               v-for="component in components"
@@ -101,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store'
 import ComponentsList from './ComponentsList.vue'
@@ -115,8 +131,12 @@ import { forEach, pickBy } from 'lodash-es'
 import initHotKeys from '@/plugins/hotKeys'
 import HistoryArea from './HistoryArea.vue'
 import initContextMenu from '@/plugins/contextMenu'
+import html2canvas from 'html2canvas'
+import PublishForm from '@/components/PublishForm.vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import InlineEdit from './InlineEdit.vue'
+import { takeScreenshotAndUpload } from '@/helpers'
+import PreviewForm from '@/components/PreviewForm.vue'
 export type TabType = 'component' | 'layer' | 'page'
 
 initHotKeys()
@@ -126,10 +146,14 @@ const route = useRoute()
 const store = useStore<GlobalDataProps>()
 const components = computed(() => store.state.editor.components)
 const page = computed(() => store.state.editor.page)
+const channels = computed(() => store.state.editor.channels)
 const activePanel = ref<TabType>('component')
 const currentElement = computed<ComponentData | null>(
   () => store.getters.getCurrentElement
 )
+const showPublishForm = ref(false)
+const showPreviewForm = ref(false)
+const canvasFix = ref(false)
 
 const currentWorkId = route.params.id
 onMounted(() => {
@@ -139,18 +163,21 @@ onMounted(() => {
 })
 // 获取作品
 
-const pageChange = (e) => {
+const pageChange = (e: any) => {
   store.commit('updatePage', e)
 }
 
 const titleChange = (newTitle: string) => {
   store.commit('updatePage', { key: 'title', value: newTitle, isRoot: true })
 }
-const preview = () => {}
+const preview = () => {
+  showPreviewForm.value = true
+}
 const saveWork = () => {
-  const { title, props } = page.value
+  const { title, props, coverImg } = page.value
   const payload = {
     title,
+    coverImg,
     content: {
       components: components.value,
       props
@@ -163,7 +190,41 @@ onBeforeRouteLeave((to, from, next) => {
   // 如果有改动，则在跳转之前，自动保存
 })
 
-const publish = () => {}
+const publish = async () => {
+  store.commit('setActive', '')
+  const el = document.getElementById('canvas-area') as HTMLElement
+  canvasFix.value = true
+  await nextTick()
+  try {
+    const ret = await takeScreenshotAndUpload(el)
+
+    if (ret) {
+      // 截屏是为了获取 coverImg
+      store.commit('updatePage', {
+        key: 'coverImg',
+        value: ret.urls[0],
+        isRoot: true
+      })
+      // 保存
+      await saveWork()
+      // 发布
+      await store.dispatch('publishWork', currentWorkId)
+      // 获取渠道列表
+      await store.dispatch('fetchChannels', currentWorkId)
+      if (!channels.value.length) {
+        await store.dispatch('createChannel', {
+          name: '默认',
+          workId: parseInt(currentWorkId as string)
+        })
+      }
+      showPublishForm.value = true
+    }
+  } catch (error) {
+    console.log('error >>> ', error)
+  } finally {
+    canvasFix.value = false
+  }
+}
 
 const addItem = (component: any) => {
   store.commit('addComponent', component)
@@ -226,5 +287,12 @@ const handleChange = (e: any) => {
     margin-top: 50px;
     max-height: 80vh;
   }
+}
+.preview-list.canvas-fix .edit-wrapper > * {
+  box-shadow: none !important;
+}
+.preview-list.canvas-fix {
+  position: absolute;
+  max-height: none;
 }
 </style>

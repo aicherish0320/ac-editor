@@ -5,7 +5,14 @@ import { AllComponentProps, textDefaultProps } from '@/common/defaultProps'
 import { message } from 'ant-design-vue'
 import { cloneDeep, debounce, update } from 'lodash-es'
 import { insertAt } from '@/helpers'
-import { getWorkById, saveWork } from '@/apis/editor'
+import {
+  createChannel,
+  delChannel,
+  fetchChannels,
+  getWorkById,
+  publishWork,
+  saveWork
+} from '@/apis/editor'
 
 export type MoveDirection = 'Up' | 'Down' | 'Left' | 'Right'
 
@@ -34,6 +41,12 @@ export interface ComponentData {
   isLocked?: boolean
   // 图层名称
   layerName?: string
+}
+export interface ChannelProps {
+  id: number
+  name: string
+  workId: number
+  status: number
 }
 
 export interface PageProps {
@@ -77,6 +90,7 @@ export interface EditorProps {
   historyIndex: number
   cachedOldValues: any
   maxHistoryNumber: number
+  channels: ChannelProps[]
 }
 
 export type AllFormProps = PageProps & AllComponentProps
@@ -84,7 +98,7 @@ export type AllFormProps = PageProps & AllComponentProps
 export const testComponents: ComponentData[] = [
   {
     id: uuidV4(),
-    name: 'AcText',
+    name: 'l-text',
     layerName: '图层一',
     props: {
       ...textDefaultProps,
@@ -192,7 +206,8 @@ const editor: Module<EditorProps, GlobalDataProps> = {
     histories: [],
     historyIndex: -1,
     cachedOldValues: null,
-    maxHistoryNumber: 3
+    maxHistoryNumber: 3,
+    channels: []
   },
   getters: {
     getCurrentElement(state) {
@@ -228,8 +243,25 @@ const editor: Module<EditorProps, GlobalDataProps> = {
       commit('fetchWork', ret)
     },
     async saveWork({ commit }, payload) {
-      const ret = await saveWork(payload)
-      commit('saveWork', ret)
+      await saveWork(payload)
+    },
+    async publishWork(_, payload) {
+      await publishWork(payload)
+    },
+    async fetchChannels({ commit }, payload) {
+      const ret = await fetchChannels(payload)
+      commit('fetchChannels', (ret as any).list)
+      console.log('ret fetchChannels >>> ', ret)
+    },
+    async createChannel({ commit }, payload) {
+      const ret = await createChannel(payload)
+      console.log('ret createChannel >>> ', ret)
+      commit('createChannel', ret)
+    },
+    async deleteChannel({ commit }, payload) {
+      const ret = await delChannel(payload)
+      commit('deleteChannel', payload)
+      console.log('deleteChannel >>> ', ret)
     }
   },
   mutations: {
@@ -242,6 +274,17 @@ const editor: Module<EditorProps, GlobalDataProps> = {
       state.components = content.components
     },
     saveWork(state, data) {},
+    fetchChannels(state, channels) {
+      state.channels = channels
+    },
+    createChannel(state, channel) {
+      state.channels = [...state.channels, channel]
+    },
+    deleteChannel(state, data) {
+      if (data) {
+        state.channels = state.channels.filter((channel) => channel.id !== data)
+      }
+    },
     addComponent(state, component: ComponentData) {
       component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)

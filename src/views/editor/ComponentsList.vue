@@ -6,7 +6,7 @@
       :key="index"
       @click="onItemClick(item)"
     >
-      <AcText v-bind="item"></AcText>
+      <l-text v-bind="item"></l-text>
     </div>
     <StyleUploader @success="onImageUploaded"></StyleUploader>
   </div>
@@ -14,8 +14,6 @@
 
 <script setup lang="ts">
 import { imageDefaultProps, TextComponentProps } from '@/common/defaultProps'
-import AcText from '@/components/AcText.vue'
-import AcImage from '@/components/AcImage.vue'
 import { ComponentData } from '@/store/modules/editor'
 import { v4 as uuidV4 } from 'uuid'
 import { message } from 'ant-design-vue'
@@ -28,7 +26,7 @@ const emits = defineEmits(['on-item-click'])
 
 const onItemClick = (props: TextComponentProps) => {
   const componentData: ComponentData = {
-    name: 'AcText',
+    name: 'l-text',
     id: uuidV4(),
     props
   }
@@ -38,7 +36,7 @@ const onItemClick = (props: TextComponentProps) => {
 
 const onImageUploaded = (data: any) => {
   const componentData: ComponentData = {
-    name: 'AcImage',
+    name: 'l-image',
     id: uuidV4(),
     props: {
       ...imageDefaultProps

@@ -43,6 +43,7 @@
 import { reactive, ref, computed, PropType } from 'vue'
 import { v4 as uuidV4 } from 'uuid'
 import { last } from 'lodash-es'
+import request from '@/utils/request.js'
 
 type UploadStatus = 'ready' | 'loading' | 'success' | 'error'
 type CheckUpload = (file: File) => boolean | Promise<File>
@@ -104,21 +105,20 @@ const postFile = (readyFile: UploadFile) => {
   formData.append('file', readyFile.raw)
   readyFile.status = 'loading'
 
-  fetch(props.action, {
-    method: 'post',
-    body: formData
-  })
-    .then((response) => response.json())
-    .then((resp) => {
-      readyFile.resp = resp.data
+  request
+    .post(props.action, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    .then((resp: any) => {
       readyFile.status = 'success'
+      readyFile.resp = resp
       emits('success', {
-        resp: resp.data,
+        resp,
         file: readyFile,
         list: filesList.value
       })
     })
-    .catch((e) => {
+    .catch((e: any) => {
       readyFile.status = 'error'
       emits('error', { error: e, file: readyFile, list: filesList.value })
     })
@@ -127,6 +127,30 @@ const postFile = (readyFile: UploadFile) => {
         fileInput.value.value = ''
       }
     })
+
+  //   fetch(props.action, {
+  //     method: 'post',
+  //     body: formData
+  //   })
+  //     .then((response) => response.json())
+  //     .then((resp) => {
+  // readyFile.resp = resp.data
+  // readyFile.status = 'success'
+  // emits('success', {
+  //   resp: resp.data,
+  //   file: readyFile,
+  //   list: filesList.value
+  // })
+  //     })
+  // .catch((e) => {
+  //   readyFile.status = 'error'
+  //   emits('error', { error: e, file: readyFile, list: filesList.value })
+  // })
+  // .finally(() => {
+  //   if (fileInput.value) {
+  //     fileInput.value.value = ''
+  //   }
+  // })
 }
 
 const addFileToList = (uploadedFile: File) => {
