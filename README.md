@@ -149,3 +149,15 @@ declare module '*.vue' {
 'Content-Type': 'application/octet-stream;charset=urf-8'
 'Content-Disposition': attachment;filename='filename.jpg'
 ```
+
+## 部署以及性能优化
+
+> 减少代码体积、加快响应速度
+
+- Vue CLI 编译不同环境的代码
+- Webpack
+- 个性化 VueCLI 编译来完成打包分析和优化
+- 部署以及 HTTP 传输优化
+  - 使用 HTTP 缓存 expires 到 cache-control
+  - 使用 HTTP 数据压缩 gzip 到 Brotli 到静态生成
+  - 使用 HTTP 协议特性从 keep-alive 到 HTTP/2
