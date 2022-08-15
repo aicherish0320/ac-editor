@@ -131,3 +131,10 @@ declare module '*.vue' {
 
 - 方法一：最现代的 `Clipboard API`
 - 方法二：`document.execCommand()` 方法
+
+## 下载文件原理
+
+- a 标签
+  - 创建 A 链接
+  - 设置 href 以及 download 属性
+  - 触发 A 链接的点击事件
