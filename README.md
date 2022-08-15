@@ -138,3 +138,14 @@ declare module '*.vue' {
   - 创建 A 链接
   - 设置 href 以及 download 属性
   - 触发 A 链接的点击事件
+
+## FileSaver.js
+
+借助 HTTP 特殊的相应头发出浏览器自动下载
+
+**Content-Disposition** 最佳的下载方式，需要服务器端端的支持，并且不需要任何的 JavaScript，需要在 HTTP 头部添加
+
+```js
+'Content-Type': 'application/octet-stream;charset=urf-8'
+'Content-Disposition': attachment;filename='filename.jpg'
+```
