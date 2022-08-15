@@ -161,3 +161,14 @@ declare module '*.vue' {
   - 使用 HTTP 缓存 expires 到 cache-control
   - 使用 HTTP 数据压缩 gzip 到 Brotli 到静态生成
   - 使用 HTTP 协议特性从 keep-alive 到 HTTP/2
+
+## Webpack 构建优化
+
+### Bundler
+
+将浏览器不支持的模块进行编译、转换、合并最后生成的代码可以在浏览器端良好的运行的工具
+
+- Loader
+  - 用于对模块的源代码进行转换
+- Plugin
+  -
