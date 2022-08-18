@@ -161,3 +161,53 @@ declare module '*.vue' {
   - 使用 HTTP 缓存 expires 到 cache-control
   - 使用 HTTP 数据压缩 gzip 到 Brotli 到静态生成
   - 使用 HTTP 协议特性从 keep-alive 到 HTTP/2
+
+## Webpack 构建优化
+
+### Bundler
+
+将浏览器不支持的模块进行编译、转换、合并最后生成的代码可以在浏览器端良好的运行的工具
+
+- Loader
+  - 用于对模块的源代码进行转换
+- ## Plugin
+
+### 个性化构建结果，`vue.config.js`
+
+- publicPath
+- css.loaderOptions
+
+### 使用 SplitChunksPlugin 继续优化文件大小
+
+- 充分利用浏览的缓存
+- 浏览器支持平行加载多个文件
+  - HTTP1.1
+  - HTTP2
+
+### HTTP 缓存详解
+
+- Expires：相应头包含日期/时间，即在此时候之后，相应过期
+- Cache-Control：通用消息头字段，被用于在 HTTP 请求和相应中，通过指定指令来实现缓存机制
+- Etag：Etag HTTP 相应头是资源的特定版本的标识符，这可以让缓存更加更加高效，并节省带宽，因为如果内容没有改变，Web 服务器不需要发送完整的相应
+- Last-Modified：是一个相应首部，其中包含源头服务器认定的资源做出修改的日期及时间
+
+### gzip 压缩
+
+- Gzip 是一种压缩文件格式并且也是一个 类 Unix 上的一种文件压缩软件
+
+### Brotli
+
+### HTTP 协议对于传输的优化
+
+HTTP 是建立在 TCP 协议之上，所以 HTTP 协议的瓶颈及其优化技巧都是基于 TCP 协议本身。
+例如，tcp 建立连接的 3 次握手和断开连接的 4 次握手以及每次建立连接带来的延迟时间
+
+- KeepAlive
+
+### HTTP/2
+
+- 二进制协议
+- 多路复用
+  - 多路复用很好的解决了浏览器限制同一个域名下的请求数量的问题，同时也更容易实现全速传输。
+  - 同个域名只需要占用一个 TCP 连接，使用一个连接并行发送多个请求和相应，消除了因多个 TCP 连接而带来的颜氏和内存消耗
+- Header 压缩
